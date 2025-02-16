@@ -16,6 +16,9 @@ body {
   .editor-container ul {
    @apply p-2 list-disc;
   }
+  .editor-container ol {
+    @apply p-2 list-decimal
+   }
 }
 
 @layer base {

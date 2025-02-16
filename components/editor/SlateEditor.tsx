@@ -21,11 +21,13 @@ import { withHistory, HistoryEditor } from "slate-history";
 type CustomElement = {
   type:
     | "paragraph"
-    | "block-quote"
-    | "bulleted-list"
-    | "numbered-list"
     | "heading-one"
     | "heading-two"
+    | "heading-three"
+    | "heading-four"
+    | "heading-five"
+    | "numbered-list"
+    | "bulleted-list"
     | "list-item";
   children: CustomText[];
 };
@@ -68,7 +70,7 @@ const SlateEditor = () => {
   );
 
   const toggleBlock = (format: string) => {
-    const isActive = isBlockActive(format);
+    const isActive = isBlockActive(editor, format);
     const isList = LIST_TYPES.includes(format);
 
     Transforms.unwrapNodes(editor, {
@@ -94,7 +96,7 @@ const SlateEditor = () => {
   };
 
   const toggleMark = (format: string) => {
-    const isActive = isMarkActive(format);
+    const isActive = isMarkActive(editor, format);
     if (isActive) {
       Editor.removeMark(editor, format);
     } else {
@@ -102,7 +104,7 @@ const SlateEditor = () => {
     }
   };
 
-  const isBlockActive = (format: string) => {
+  const isBlockActive = (editor: Editor, format: string) => {
     const [match] = Editor.nodes(editor, {
       match: (n) =>
         !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
@@ -110,53 +112,75 @@ const SlateEditor = () => {
     return !!match;
   };
 
-  const isMarkActive = (format: string) => {
+  const isMarkActive = (editor: Editor, format: string) => {
     const marks = Editor.marks(editor) as Record<string, boolean>;
     return marks ? marks[format] === true : false;
   };
 
   return (
     <div>
-      <div className="flex gap-2" style={{ padding: "10px 0" }}>
+      <div className="editor-controls flex gap-2 text-sm border-b border-gray-200 p-3 bg-white rounded-t-md">
         <button
+          className={`px-2 py-1 rounded hover:bg-gray-100 ${
+            isBlockActive(editor, "paragraph") ? "bg-gray-200" : ""
+          }`}
           onMouseDown={(e) => {
             e.preventDefault();
-            toggleMark("bold");
+            toggleBlock("paragraph");
           }}
         >
-          Bold
+          <span className="font-medium">¶</span>
         </button>
-        <button
-          onMouseDown={(e) => {
-            e.preventDefault();
-            toggleBlock("heading-one");
-          }}
-        >
-          H1
-        </button>
-        <button
-          onMouseDown={(e) => {
-            e.preventDefault();
-            toggleBlock("block-quote");
-          }}
-        >
-          Quote
-        </button>
-        <button
-          onMouseDown={(e) => {
-            e.preventDefault();
-            toggleBlock("bulleted-list");
-          }}
-        >
-          List
-        </button>
+
+        <div className="flex gap-1 border-r border-gray-200 pr-2">
+          {["one", "two", "three", "four", "five"].map((level, index) => (
+            <button
+              key={level}
+              className={`px-2 py-1 rounded hover:bg-gray-100 font-medium ${
+                isBlockActive(editor, `heading-${level}`) ? "bg-gray-200" : ""
+              }`}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                toggleBlock(`heading-${level}`);
+              }}
+            >
+              H{index + 1}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-1">
+          <button
+            className={`px-2 py-1 rounded hover:bg-gray-100 ${
+              isBlockActive(editor, "numbered-list") ? "bg-gray-200" : ""
+            }`}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              toggleBlock("numbered-list");
+            }}
+          >
+            <span className="font-medium">1.</span>
+          </button>
+          <button
+            className={`px-2 py-1 rounded hover:bg-gray-100 ${
+              isBlockActive(editor, "bulleted-list") ? "bg-gray-200" : ""
+            }`}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              toggleBlock("bulleted-list");
+            }}
+          >
+            <span className="font-medium">•</span>
+          </button>
+        </div>
       </div>
-      <Slate editor={editor} initialValue={initialValue} onChange={() => {}}>
+
+      <Slate  editor={editor} initialValue={initialValue} onChange={() => {}}>
         <Editable
           renderElement={renderElement}
-          className="border border-gray-300 rounded-md p-2 min-h-[200px] editor-container"
           renderLeaf={renderLeaf}
-          placeholder="Enter some text..."
+          placeholder="Start typing..."
+          className="border border-gray-300 editor-container rounded-b-md p-4 min-h-[200px] bg-white"
           onKeyDown={(event) => {
             if (event.ctrlKey) {
               switch (event.key) {
@@ -176,18 +200,22 @@ const SlateEditor = () => {
 
 const Element = ({ attributes, children, element }: RenderElementProps) => {
   switch (element.type) {
-    case "block-quote":
-      return <blockquote {...attributes}>{children}</blockquote>;
-    case "bulleted-list":
-      return <ul {...attributes}>{children}</ul>;
     case "heading-one":
       return <h1 {...attributes}>{children}</h1>;
     case "heading-two":
       return <h2 {...attributes}>{children}</h2>;
-    case "list-item":
-      return <li {...attributes}>{children}</li>;
+    case "heading-three":
+      return <h3 {...attributes}>{children}</h3>;
+    case "heading-four":
+      return <h4 {...attributes}>{children}</h4>;
+    case "heading-five":
+      return <h5 {...attributes}>{children}</h5>;
+    case "bulleted-list":
+      return <ul {...attributes}>{children}</ul>;
     case "numbered-list":
       return <ol {...attributes}>{children}</ol>;
+    case "list-item":
+      return <li {...attributes}>{children}</li>;
     default:
       return <p {...attributes}>{children}</p>;
   }

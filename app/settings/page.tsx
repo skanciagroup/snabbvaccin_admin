@@ -16,7 +16,9 @@ export default function SettingsPage() {
       </Button>
       <div className="mt-6">
         <h2 className="text-xl font-semibold">Slate Editor</h2>
-        <SlateEditor  /> 
+        <div className="mt-4 bg-white p-2" >
+        <SlateEditor /> 
+        </div>
       </div>
     </div>
   );
