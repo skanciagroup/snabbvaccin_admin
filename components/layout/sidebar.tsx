@@ -13,11 +13,14 @@ import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 export function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebarStore();
   const [showText, setShowText] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -39,6 +42,12 @@ export function Sidebar() {
     }
   }, [isOpen]);
 
+  const handleNavigation = (href: string) => {
+    if (pathname !== href) {
+      router.push(href);
+    }
+  };
+
   return (
     <motion.div
       initial={{ width: 0 }}
@@ -53,15 +62,14 @@ export function Sidebar() {
         onClick={toggleSidebar}
       >
         {isMounted && (isOpen ? <ChevronLeft /> : <ChevronRight />)}
-       
       </Button>
 
       <nav className="space-y-2">
         {menuItems.map((item) => (
           <motion.a
             key={item.href}
-            href={item.href}
-            className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent"
+            onClick={() => handleNavigation(item.href)}
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent cursor-pointer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
