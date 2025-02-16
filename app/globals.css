@@ -16,9 +16,28 @@ body {
   .editor-container ul {
    @apply p-2 list-disc;
   }
+  .editor-container h1 {
+    @apply font-sans md:text-5xl text-4xl font-bold text-primary;
+   }
   .editor-container ol {
     @apply p-2 list-decimal
    }
+
+   .editor-container h3 {
+    @apply font-sans text-2xl font-bold;
+  }
+
+  .editor-container p {
+    @apply text-secondary  mb-2 mt-2;
+  }
+
+  .editor-container h2 {
+    @apply font-sans text-3xl md:text-4xl text-primary font-[600] mb-2;
+  }
+
+  .editor-container h4 {
+    @apply font-sans text-3xl md:text-2xl text-primary font-[600] mb-2;
+  }
 }
 
 @layer base {
