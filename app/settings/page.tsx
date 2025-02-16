@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/store/sidebarStore";
-
+import SlateEditor from "@/components/editor/SlateEditor"
 export default function SettingsPage() {
   const { isOpen, toggleSidebar } = useSidebarStore();
 
@@ -14,6 +14,10 @@ export default function SettingsPage() {
       <Button onClick={toggleSidebar} className="mt-4">
         {isOpen ? "Close Sidebar" : "Open Sidebar"}
       </Button>
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold">Slate Editor</h2>
+        <SlateEditor  /> 
+      </div>
     </div>
   );
 }

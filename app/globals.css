@@ -7,6 +7,17 @@ body {
 }
 
 
+
+@layer components {
+
+  .editor-container {
+    @apply pl-10;
+  }
+  .editor-container ul {
+   @apply p-2 list-disc;
+  }
+}
+
 @layer base {
  
   
