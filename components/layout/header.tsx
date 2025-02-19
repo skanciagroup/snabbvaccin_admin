@@ -43,8 +43,14 @@ export function Header() {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      const response = await fetch("/auth/signout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
       router.push("/login");
       router.refresh();
     } catch (error) {
