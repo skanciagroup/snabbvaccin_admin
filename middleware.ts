@@ -6,11 +6,6 @@ export async function middleware(request: NextRequest) {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser()
-  // const {
-  //   data: { user },
-  //   error,
-  // } = await supabase.auth.getUser();
-  console.log('supabase', data.user?.email)
   const isLoginPage = request.nextUrl.pathname === '/login';
 
   if (error || !data.user) {

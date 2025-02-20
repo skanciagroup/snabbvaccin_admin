@@ -23,6 +23,20 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Reset error message
+
+    // Basic validation
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    // Optional: Regex for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("email", email);
@@ -32,6 +46,7 @@ export default function LoginPage() {
       await login(formData);
       router.push("/dashboard");
     } catch (err) {
+      // Set error message if login fails
       setError("Invalid email or password");
       console.error("Login error:", err);
     }
@@ -39,12 +54,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-[400px] shadow-lg border-border">
+      <Card className="w-[400px] bg-white shadow-lg rounded-xl border-primary border-[1px]">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-primary">
-            Welcome back
+          <CardTitle className="text-2xl font-bold text-primaryDark text-center">
+            Snabbvaccin Admin
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
+          <CardDescription className="text-muted-foreground text-primaryDark text-center">
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
@@ -57,7 +72,10 @@ export default function LoginPage() {
           )}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground">
+              <Label
+                htmlFor="email"
+                className="text-foreground text-primaryDark"
+              >
                 Email
               </Label>
               <Input
@@ -66,11 +84,14 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="bg-background border-input"
+                className="bg-background border-input rounded-[7px]"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground">
+              <Label
+                htmlFor="password"
+                className="text-foreground text-primaryDark"
+              >
                 Password
               </Label>
               <Input
@@ -78,12 +99,13 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-background border-input"
+                className="bg-background border-input rounded-[7px]"
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              variant="default"
+              className="w-full text-white hover:bg-primary/90 rounded-[7px] font-bold"
             >
               Sign In
             </Button>
