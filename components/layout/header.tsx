@@ -1,7 +1,6 @@
 "use client";
-import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
-import logo from "@/public/logo.png";
+import logo from "@/public/logo_white.png";
 import { useLanguageStore } from "@/store/languageStore";
 import i18n from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { FaUserCog } from "react-icons/fa";
+
 
 export function Header() {
   const { language, setLanguage } = useLanguageStore((state) => state);
@@ -59,21 +60,20 @@ export function Header() {
 
   return (
     <header className="border-b">
-      <div className="flex h-16 items-center bg-primaryDark/10 px-4 justify-between">
+      <div className="flex h-16 items-center bg-primary px-4 justify-between">
         <h1 className="text-xl text-primaryDark font-bold">
           <Image src={logo} alt="logo" width={180} />
         </h1>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5 text-muted-foreground" />
-          </Button>
+          </Button> */}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8 bg-primary hover:bg-primaryDark p-2 border border-secondary">
-                  <AvatarImage src="/admin.png" alt="@admin" />
-                  <AvatarFallback>AD</AvatarFallback>
+              <Button variant="ghost" className="relative h-8 w-8 focus:outline-none rounded-full">
+                <Avatar className="h-8 w-8 bg-white border-white border-1 group hover:bg-primaryDark  border flex justify-center items-center ">
+                  <FaUserCog className="h-8 w-8 text-primaryDark group-hover:border-none group-hover:text-white " />
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
