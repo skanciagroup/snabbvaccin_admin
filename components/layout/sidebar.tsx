@@ -8,7 +8,16 @@ import {
   Settings,
   BarChart2,
   Bell,
+  MapPin,
+  Truck,
+  BookOpenText,
+  Hospital,
 } from "lucide-react";
+import { BiInjection } from "react-icons/bi";
+import { AiOutlineAudit } from "react-icons/ai";
+import { MdOutlineSchema, MdOutlineInventory } from "react-icons/md";
+import { useTranslation } from "react-i18next";
+
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { motion } from "framer-motion";
@@ -21,13 +30,34 @@ export function Sidebar() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Users, label: "Users", href: "/users" },
-    { icon: BarChart2, label: "Analytics", href: "/analytics" },
-    { icon: Bell, label: "Notifications", href: "/notifications" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    {
+      icon: LayoutDashboard,
+      label: t("sidebar.dashboard"),
+      href: "/dashboard",
+    },
+    { icon: Users, label: t("sidebar.users"), href: "/users" },
+    { icon: MapPin, label: t("sidebar.locations"), href: "/locations" },
+    { icon: Truck, label: t("sidebar.busses"), href: "/busses" },
+    { icon: BiInjection, label: t("sidebar.vaccines"), href: "/vaccines" },
+    { icon: BookOpenText, label: t("sidebar.documents"), href: "/documents" },
+    {
+      icon: Hospital,
+      label: t("sidebar.organisations"),
+      href: "/organisations",
+    },
+    {
+      icon: AiOutlineAudit,
+      label: t("sidebar.inspections"),
+      href: "/inspections",
+    },
+    { icon: MdOutlineSchema, label: t("sidebar.schemas"), href: "/schemas" },
+    { icon: MdOutlineInventory, label: t("sidebar.stock"), href: "/stock" },
+    { icon: BarChart2, label: t("sidebar.analytics"), href: "/analytics" },
+    { icon: Bell, label: t("sidebar.notifications"), href: "/notifications" },
+    { icon: Settings, label: t("sidebar.settings"), href: "/settings" },
   ];
 
   useEffect(() => {
@@ -70,7 +100,7 @@ export function Sidebar() {
             key={item.href}
             onClick={() => handleNavigation(item.href)}
             className={cn(
-              "flex items-center gap-2 p-2 rounded-xl cursor-pointer transition  duration-200",
+              "flex items-center gap-2 p-2 rounded-xl cursor-pointer transition  duration-200 group",
               pathname === item.href
                 ? "bg-primaryDark text-white"
                 : "hover:bg-primaryDark text-white",
@@ -78,13 +108,13 @@ export function Sidebar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <item.icon className="h-5 w-5" />
+            <item.icon className="h-5 w-5 group-hover:text-slate-50" />
             {showText && (
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2, delay: 0.1 }}
-                className="text-white transition-opacity duration-200"
+                className="text-white transition-opacity text-sm duration-200"
               >
                 {item.label}
               </motion.span>
