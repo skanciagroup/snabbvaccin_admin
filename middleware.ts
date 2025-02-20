@@ -6,10 +6,14 @@ export async function middleware(request: NextRequest) {
   // Public paths that don't require authentication
   //const publicPaths = ["/login", "/auth/signout"];
   //const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
-
+  const { pathname } = request.nextUrl;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const isLoginPage = request.nextUrl.pathname === "/login";
+
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
 
   if (!data.user) {
     // If the user is not authenticated and trying to access the login page, allow access
