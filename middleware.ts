@@ -1,24 +1,25 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+//import { updateSession } from "@/lib/supabase/middleware";
 import { createClient } from "./lib/supabase/server";
 
 export async function middleware(request: NextRequest) {
   const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser()
-  const isLoginPage = request.nextUrl.pathname === '/login';
+  const { data, error } = await supabase.auth.getUser();
+  const isLoginPage = request.nextUrl.pathname === "/login";
 
   if (error || !data.user) {
     // If the user is not authenticated and trying to access the login page, allow access
     if (isLoginPage) {
       return NextResponse.next();
     }
-    await updateSession(request);
     // Redirect to the login page if the user is not authenticated
-    return NextResponse.redirect(new URL('/login', request.url));
-     
+    return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  // Allow access to authenticated users
+  return NextResponse.next();
 }
+
 export const config = {
   matcher: [
     /*
