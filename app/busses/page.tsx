@@ -2,7 +2,7 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
 
-const page = () => {
+const Busses = () => {
   const { t } = useTranslation();
   return (
     <div className="space-y-6">
@@ -15,4 +15,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Busses
