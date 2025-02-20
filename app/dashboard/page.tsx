@@ -5,7 +5,7 @@ import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { OverviewChart } from "@/components/dashboard/overview-chart";
 
 export default function DashboardPage() {
-  const { t } = useTranslation(); // Use the translation hook
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
