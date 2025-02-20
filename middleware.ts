@@ -4,27 +4,26 @@ import { createClient } from "./lib/supabase/server";
 
 export async function middleware(request: NextRequest) {
   // Public paths that don't require authentication
-  const publicPaths = ["/login", "/auth/signout"];
-  const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
+  //const publicPaths = ["/login", "/auth/signout"];
+  //const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const isLoginPage = request.nextUrl.pathname === "/login";
 
   if (!data.user) {
-    // Allow access to public paths
-    if (isPublicPath) {
+    // If the user is not authenticated and trying to access the login page, allow access
+    if (isLoginPage) {
       return NextResponse.next();
     }
-    // Redirect to login for protected routes
+    // Redirect to the login page if the user is not authenticated
     return NextResponse.redirect(new URL("/login", request.url));
+  } else if (isLoginPage) {
+    // If the user is authenticated and trying to access the login page, redirect to the dashboard
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Prevent authenticated users from accessing login page
-  if (data.user && isLoginPage) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
+  // Allow access to authenticated users
   return NextResponse.next();
 }
 

@@ -42,13 +42,12 @@ export default function LoginPage() {
     formData.append("email", email);
     formData.append("password", password);
 
-    try {
-      await login(formData);
-      router.push("/dashboard");
-    } catch (err) {
-      // Set error message if login fails
-      setError("Invalid email or password");
-      console.error("Login error:", err);
+    const result = await login(formData);
+    if (result.success) {
+      router.push("/dashboard"); // Redirect to dashboard on success
+    } else {
+      setError(result.message || "An unknown error occurred."); // Provide a default error message
+      //console.error("Login error:", result.message);
     }
   };
 
