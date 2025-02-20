@@ -52,7 +52,6 @@ export function Header() {
       }
 
       router.push("/login");
-      router.refresh();
     } catch (error) {
       console.error("Error logging out:", error);
     }
