@@ -1,18 +1,33 @@
-'use client'
-import React from 'react'
+"use client";
+import Loader from "@/components/Loader";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const Busses = () => {
   const { t } = useTranslation();
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight text-primary">
-        {t("sidebar.busses")}
-        </h1>
-      </div>
-    </div>
-  )
-}
+  const [loading, setLoading] = useState(true);
 
-export default Busses
+  useEffect(() => {
+    const fetchData = async () => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    };
+    fetchData();
+  }, []);
+  return (
+    <div className="">
+      {loading ? (
+      <Loader />
+      ) : (
+        <div className="main_container flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight text-primary">
+            {t("sidebar.busses")}
+          </h1>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Busses;
