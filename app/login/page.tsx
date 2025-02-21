@@ -123,7 +123,7 @@ export default function LoginPage() {
           </form>
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-primary bg-opacity-10 z-20">
-              <div className="w-20 h-20 rounded-full bg-green-500 animate-pulse"></div>
+              <div className="w-20 h-20 rounded-full bg-green-500 animate-ping"></div>
             </div>
           )}
         </CardContent>
