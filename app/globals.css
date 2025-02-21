@@ -38,6 +38,10 @@ body {
   .editor-container h4 {
     @apply font-sans text-3xl md:text-2xl text-primary font-[600] mb-2;
   }
+
+  .main_container {
+    @apply p-6
+  }
 }
 
 @layer base {

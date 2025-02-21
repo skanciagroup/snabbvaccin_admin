@@ -12,7 +12,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Header />
       <div className="flex bg-white">
         <Sidebar />
-        <main className="flex-1 p-6">
+        <main className="flex-1">
           {children}
         </main>
       </div>
