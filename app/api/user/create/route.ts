@@ -16,7 +16,7 @@ const adminAuthClient = supabaseAdmin.auth.admin
 
 export async function POST(request: Request) {
   const body: ProfileUser = await request.json();
-  const { email, password, first_name, last_name, personal_number, phone, vaccinator, license } = body;
+  const { email, password, first_name, last_name, personal_number, phone, vaccinator, license, license_type } = body;
 
   // Check if the user already exists
   const {
@@ -57,7 +57,8 @@ export async function POST(request: Request) {
       personal_number,
       phone,
       vaccinator,
-      license
+      license,
+      license_type
     });
     console.log('Profile data', data);
     console.log('Profile error', error);  
