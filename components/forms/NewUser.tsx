@@ -50,6 +50,7 @@ const NewUser = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
     watch,
   } = useForm<NewUserFormData>({
     resolver: yupResolver(schema),
@@ -80,6 +81,7 @@ const NewUser = () => {
           status: result.status,
           text: "User created successfully",
         });
+        reset();
       } else {
         setMessage({
           type: "errorUndefined",
@@ -276,7 +278,7 @@ const NewUser = () => {
         {loading ? (
           <div className="flex items-center">
             <Image src={Loader} width={40} height={40} alt="loading" />
-            Please wait
+            Adding users. Please wait
           </div>
         ) : (
           "Submit"

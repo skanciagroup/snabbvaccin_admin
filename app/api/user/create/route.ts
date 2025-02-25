@@ -60,10 +60,9 @@ export async function POST(request: Request) {
       license,
       license_type
     });
-    console.log('Profile data', data);
-    console.log('Profile error', error);  
+    
     return NextResponse.json(
-      { message: "User created successfully", status: 201  },
+      { message: "User created successfully", status: 201, data, error  },
     );
   }
 

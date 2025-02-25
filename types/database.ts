@@ -18,3 +18,10 @@ export interface ProfileUser {
   license?: boolean;
   license_type?: "manual" | "automatic";
 }
+
+export interface Organisation  {
+  id?: string;
+  name: string;
+  created_at?: string;
+  updated_at?: string;
+};
