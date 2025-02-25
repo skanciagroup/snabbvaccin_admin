@@ -5,6 +5,7 @@ import "./globals.css"; // Import the i18n configuration
 import { usePathname } from "next/navigation";
 import useLanguageChange from "@/hooks/useLanguageChange";
 import { useLanguageStore } from "@/store/languageStore";
+import ToastProvider from "@/providers/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang={language}>
       <body className={`${inter.className} bg-[#f3f0f0]`}>
+        <ToastProvider />
         {isLoginPage ? children : <MainLayout>{children}</MainLayout>}
       </body>
     </html>
