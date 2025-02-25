@@ -40,7 +40,7 @@ const Modal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]shadow-lg bg-white p-6 ">
+      <DialogContent className="sm:max-w-[425px]shadow-lg bg-white p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-gray-800">
             {title}

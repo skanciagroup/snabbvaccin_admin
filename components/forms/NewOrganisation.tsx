@@ -8,12 +8,17 @@ import Loader from "@/public/loading.gif";
 import Image from "next/image";
 import { Organisation } from "@/types/database";
 import useOrganisationStore from "@/store/organisationStore";
+import toast from "react-hot-toast"
 
 const schema = yup.object().shape({
   name: yup.string().required("Organization name is required"),
 });
 
-const NewOrganisation = () => {
+interface NewOrganisationProps {
+  onClose: () => void;
+}
+
+const NewOrganisation: React.FC<NewOrganisationProps> = ({onClose}) => {
   const [loading, setLoading] = useState(false);
   const {
     control,
@@ -58,6 +63,8 @@ const NewOrganisation = () => {
           text: result.message,
         });
         fetchOrganisations();
+        toast.success("Organisation created successfully");
+        onClose()
         reset();
       } else {
         setMessage({

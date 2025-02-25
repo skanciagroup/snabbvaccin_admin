@@ -8,6 +8,7 @@ import Loader from "@/public/loading.gif";
 import Image from "next/image";
 import { Organisation } from "@/types/database";
 import useOrganisationStore from "@/store/organisationStore";
+import toast from "react-hot-toast";
 
 const schema = yup.object().shape({
   name: yup.string().required("Organization name is required"),
@@ -60,6 +61,7 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
           text: "Organisation updated successfully",
         });
         fetchOrganisations();
+        toast.success("Organisation updated successfully");
         onClose();
       } else {
         setMessage({ type: "error", text: "Failed to update organisation" });

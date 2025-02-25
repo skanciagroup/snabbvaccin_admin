@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import useOrganisationStore from "@/store/organisationStore"; // Import the Zustand store
 import EditOrganisation from "@/components/forms/EditOrganisation";
 import { Organisation as OrganisationType } from "@/types/database";
+import toast from "react-hot-toast";
+
 
 const Organisations = () => {
   const { t } = useTranslation();
@@ -20,7 +22,8 @@ const Organisations = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<OrganisationType | null>(null);
-
+    
+  
   useEffect(() => {
     fetchOrganisations();
   }, [fetchOrganisations]);
@@ -37,6 +40,7 @@ const Organisations = () => {
       });
       if (!response.ok) throw new Error("Failed to delete");
       fetchOrganisations();
+      toast.success("Organisation deleted successfully");
     } catch (error) {
       console.error("Error deleting organisation:", error);
     }
@@ -66,14 +70,14 @@ const Organisations = () => {
             onClose={handleDrawerClose}
           />
         ) : (
-          <NewOrganisation />
+          <NewOrganisation onClose={handleDrawerClose} />
         )}
       </Drawer>
       {loading ? (
         <Loader />
       ) : (
         <div className="space-y-6">
-          {/* Header Section */}
+            {/* Header Section */}
           <div className="flex flex-col space-y-2">
             <h1 className="text-3xl font-bold tracking-tight text-primary">
               {t("sidebar.organisations")}
