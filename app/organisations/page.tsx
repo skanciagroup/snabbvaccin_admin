@@ -18,7 +18,8 @@ const Organisations = () => {
   const { organisations, fetchOrganisations, loading } = useOrganisationStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedOrganisation, setSelectedOrganisation] = useState<OrganisationType | null>(null);
+  const [selectedOrganisation, setSelectedOrganisation] =
+    useState<OrganisationType | null>(null);
 
   useEffect(() => {
     fetchOrganisations();
@@ -89,11 +90,9 @@ const Organisations = () => {
 
           {/* Stats and Action Button */}
           <div className="flex justify-between items-center gap-x-4">
-            <Card className="w-48 rounded-xl border border-primary">
-              <CardContent className="flex items-center justify-between p-4">
-                <CardTitle className="text-lg text-primaryDark">
-                  Total
-                </CardTitle>
+            <Card className="w-48 border border-secondary/50 p-4 rounded-[7px]  hover:shadow-lg">
+              <CardContent className="flex items-center justify-between p-0">
+                <CardTitle className="text-secondary p-0">Total</CardTitle>
                 <span className="text-xl text-secondary font-semibold">
                   {organisations.length}
                 </span>

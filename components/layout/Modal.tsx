@@ -40,17 +40,28 @@ const Modal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]shadow-lg bg-white p-6 ">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          <DialogTitle className="text-lg font-semibold text-gray-800">
+            {title}
+          </DialogTitle>
+          {description && (
+            <DialogDescription className="text-sm text-gray-600">
+              {description}
+            </DialogDescription>
+          )}
         </DialogHeader>
 
         <div className="py-4">{children}</div>
 
         <DialogFooter className="flex gap-2">
           {showCancelButton && (
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="text-gray-600 hover:bg-gray-100 rounded-[7px]"
+            >
               {cancelText}
             </Button>
           )}
@@ -58,7 +69,7 @@ const Modal = ({
             <Button
               type="submit"
               onClick={onConfirm}
-              className="bg-primary text-white hover:bg-primaryDark"
+              className="bg-primary text-white hover:bg-primaryDark transition-colors duration-200 rounded-[7px]"
             >
               {confirmText}
             </Button>

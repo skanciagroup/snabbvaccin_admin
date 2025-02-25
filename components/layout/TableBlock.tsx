@@ -46,56 +46,69 @@ const TableBlock: React.FC<TableBlockProps> = ({
 
   return (
     <div className="w-full">
-      <div className="w-full overflow-x-auto">
-        <Table className="border border-primary">
+      <div className="w-full overflow-x-auto rounded-lg shadow-md">
+        <Table className="w-full border-collapse bg-white">
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-50">
               {headers.map((header, index) => (
-                <TableHead key={index} className="border border-primary">
+                <TableHead
+                  key={index}
+                  className="px-6 py-4 text-sm font-semibold text-gray-600 border-b border-gray-200"
+                >
                   {header}
                 </TableHead>
               ))}
-              <TableHead className="border border-primary">Actions</TableHead>
+              <TableHead className="px-6 py-4 text-sm font-semibold text-gray-600 border-b border-gray-200">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
+              <TableRow
+                key={rowIndex}
+                className="hover:bg-gray-50 transition-colors duration-200"
+              >
                 <TableCell
                   style={{ width: "70px" }}
-                  className="border border-primary text-center text-secondary"
+                  className="px-6 py-4 text-sm text-gray-600 border-b border-gray-200 text-center"
                 >
                   {rowIndex + 1}
                 </TableCell>
                 {headers.slice(1).map((header, colIndex) => (
                   <TableCell
                     key={colIndex}
-                    className="border border-primary text-secondary"
+                    className="px-6 py-4 text-sm text-gray-600 border-b border-gray-200"
                   >
                     {row[header.toLowerCase()] ?? "-"}
                   </TableCell>
                 ))}
-                <TableCell className="border border-primary">
-                  {onEdit && (
-                    <button
-                      className="text-primaryDark hover:underline"
-                      onClick={() => onEdit(row)}
-                    >
-                      <EditIcon
-                        className="text-primaryDark font-bold text-lg hover:scale-110 transition-all duration-200 ease-in-out hover:shadow-lg"
-                        width={18}
-                        height={18}
-                      />
-                    </button>
-                  )}
-                  {onDelete && (
-                    <button
-                      className="text-red-500 hover:underline ml-4"
-                      onClick={() => handleDelete(row)}
-                    >
-                      <RxCrossCircled className="text-white font-bold rounded-full text-lg bg-red-800 hover:bg-red-700 hover:scale-110 transition-all duration-200 ease-in-out hover:shadow-lg" />
-                    </button>
-                  )}
+                <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    {onEdit && (
+                      <button
+                        className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                        onClick={() => onEdit(row)}
+                      >
+                        <EditIcon
+                          className="text-primary hover:text-primaryDark transition-colors duration-200"
+                          width={18}
+                          height={18}
+                        />
+                      </button>
+                    )}
+                    {onDelete && (
+                      <button
+                        className="p-1 rounded-full hover:bg-red-50 transition-colors duration-200"
+                        onClick={() => handleDelete(row)}
+                      >
+                        <RxCrossCircled
+                          className="text-red-600 hover:text-red-700 transition-colors duration-200"
+                          size={18}
+                        />
+                      </button>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -107,12 +120,12 @@ const TableBlock: React.FC<TableBlockProps> = ({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         title="Confirm Delete"
-        description="Are you sure you want to delete this item? This action cannot be undone."
+        //description="Are you sure you want to delete this item? This action cannot be undone."
         onConfirm={confirmDelete}
         confirmText="Delete"
         trigger={<Button className="hidden">Delete</Button>}
       >
-        <p className="text-center text-gray-600">
+        <p className="text-center text-gray-600 text-sm">
           This action cannot be undone. Please confirm if you want to proceed
           with deletion.
         </p>
