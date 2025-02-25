@@ -13,7 +13,7 @@ import useOrganisationStore from "@/store/organisationStore"; // Import the Zust
 import EditOrganisation from "@/components/forms/EditOrganisation";
 import { Organisation as OrganisationType } from "@/types/database";
 import toast from "react-hot-toast";
-
+import SearchBar from "@/components/SearchBar"; // Import the SearchBar component
 
 const Organisations = () => {
   const { t } = useTranslation();
@@ -22,11 +22,21 @@ const Organisations = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedOrganisation, setSelectedOrganisation] =
     useState<OrganisationType | null>(null);
-    
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOrganisations, setFilteredOrganisations] = useState<
+    OrganisationType[]
+  >([]);
+
   useEffect(() => {
     fetchOrganisations();
   }, [fetchOrganisations]);
+
+  useEffect(() => {
+    const filtered = organisations.filter((org) =>
+      org.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredOrganisations(filtered);
+  }, [searchTerm, organisations]);
 
   const headers = ["S.No", "Name"];
 
@@ -77,7 +87,8 @@ const Organisations = () => {
         <Loader />
       ) : (
         <div className="space-y-6">
-            {/* Header Section */}
+          {/* Header Section */}
+          
           <div className="flex flex-col space-y-2">
             <h1 className="text-3xl font-bold tracking-tight text-primary">
               {t("sidebar.organisations")}
@@ -111,13 +122,17 @@ const Organisations = () => {
               Add Organisation
             </Button>
           </div>
-
+          <SearchBar
+        searchTerm={searchTerm}
+        onSearch={setSearchTerm}
+        placeholder="Search organisations..." // Custom placeholder
+      />
           {/* Table Section */}
           <div className="mt-6 bg-white rounded-lg shadow">
-            {organisations.length > 0 ? (
+            {filteredOrganisations.length > 0 ? (
               <TableBlock
                 headers={headers}
-                data={organisations}
+                data={filteredOrganisations}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
