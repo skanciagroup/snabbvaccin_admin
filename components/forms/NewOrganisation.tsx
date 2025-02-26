@@ -42,12 +42,15 @@ const NewOrganisation: React.FC<NewOrganisationProps> = ({onClose}) => {
   const onSubmit = async (data: Organisation) => {
     setLoading(true);
     try {
+      const trimmedData = {
+        name: data.name.trim(),
+      };
       const response = await fetch("/api/organisation/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(trimmedData),
       });
       const result = await response.json();
       if (result.status === 409) {

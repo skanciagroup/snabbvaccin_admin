@@ -44,6 +44,9 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
   const onSubmit = async (data: Organisation) => {
     setLoading(true);
     try {
+      const trimmedData = {
+        name: data.name.trim(),
+      };
       const response = await fetch("/api/organisation/edit", {
         method: "PUT",
         headers: {
@@ -51,7 +54,7 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
         },
         body: JSON.stringify({
           id: organisation.id,
-          name: data.name,
+          name: trimmedData.name,
         }),
       });
 
@@ -72,7 +75,7 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
       setLoading(false);
     }
   };
-
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
       <div>

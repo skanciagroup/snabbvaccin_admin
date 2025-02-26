@@ -9,14 +9,24 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY; // Your Supabase service r
 const supabaseAdmin = createClient(supabaseUrl!, supabaseKey!, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
-})
-const adminAuthClient = supabaseAdmin.auth.admin
+    persistSession: false,
+  },
+});
+const adminAuthClient = supabaseAdmin.auth.admin;
 
 export async function POST(request: Request) {
   const body: ProfileUser = await request.json();
-  const { email, password, first_name, last_name, personal_number, phone, vaccinator, license, license_type } = body;
+  const {
+    email,
+    password,
+    first_name,
+    last_name,
+    personal_number,
+    phone,
+    vaccinator,
+    license,
+    license_type,
+  } = body;
 
   // Check if the user already exists
   const {
@@ -32,40 +42,52 @@ export async function POST(request: Request) {
   const existingUser = users.find((user) => user.email === email);
 
   if (existingUser) {
-    return NextResponse.json(
-      { message: "User with this email already exists." , status : 409},
-    );
+    return NextResponse.json({
+      message: "User with this email already exists.",
+      status: 409,
+    });
   }
 
   // Add user to Supabase Auth
-  const { data : {user}, error } = await supabaseAdmin.auth.admin.createUser({
+  const {
+    data: { user },
+    error,
+  } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm: false
+    email_confirm: false,
   });
 
-  console.log('User data',user);
+  console.log("User data", user);
   if (error) {
     return NextResponse.json({ message: error.message }, { status: 409 });
   } else {
-
     //here we add the user data to profiles table
-    const { data,error } = await supabaseAdmin.from('profiles').insert({
+    const { data, error } = await supabaseAdmin.from("profiles").insert({
       user_id: user!.id,
       first_name,
       last_name,
-      personal_number,
-      phone,
+      personal_number: personal_number === "" ? null : personal_number,
+      phone: phone === "" ? null : phone,
       vaccinator,
       license,
-      license_type
+      license_type,
     });
-    
-    return NextResponse.json(
-      { message: "User created successfully", status: 201, data, error  },
-    );
+
+    if (error) {
+      console.error("Error inserting profile:", error);
+      return NextResponse.json(
+        { message: error.message, status: 400 },
+        { status: 400 },
+      );
+    }
+
+    return NextResponse.json({
+      message: "User created successfully",
+      status: 201,
+      data,
+    });
   }
 
   // Send back a success message
-  
 }

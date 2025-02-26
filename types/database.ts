@@ -12,11 +12,11 @@ export interface ProfileUser {
   // image: string;
   personal_number?: string;
   phone?: string;
-  // organisation: string[],
+  //organisation: string,
   // role: string;
   vaccinator?: boolean;
   license?: boolean;
-  license_type?: "manual" | "automatic";
+  license_type?: "manual" | "automatic" | null;
 }
 
 export interface Organisation {

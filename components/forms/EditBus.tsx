@@ -44,6 +44,10 @@ const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
   const onSubmit = async (data: Bus) => {
     setLoading(true);
     try {
+      const trimmedData = {
+        name: data.name.trim(),
+        reg_no: data.reg_no.trim(),
+      };
       const response = await fetch("/api/bus/edit", {
         method: "PUT",
         headers: {
@@ -51,8 +55,8 @@ const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
         },
         body: JSON.stringify({
           id: bus.id,
-          name: data.name,
-          reg_no: data.reg_no,
+          name: trimmedData.name,
+          reg_no: trimmedData.reg_no,
         }),
       });
 
