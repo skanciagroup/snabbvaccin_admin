@@ -37,7 +37,7 @@ const Buses = () => {
     setFilteredBuses(filtered);
   }, [searchTerm, buses]);
 
-  const headers = ["S.No", "Name", "reg_no"];
+  const headers = ["S.No", "Name", "REG_NO", "TYPE"];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDelete = async (row: Record<string, any>) => {

@@ -30,6 +30,7 @@ export interface Bus {
   id?: number;
   name: string;
   reg_no: string;
+  type: "automatic" | "manual";
   created_at?: string;
   updated_at?: string;
 }

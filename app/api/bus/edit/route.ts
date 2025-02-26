@@ -6,21 +6,29 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY!;
 const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
 export async function PUT(request: Request) {
-  const { id, name, reg_no } = await request.json();
+  const { id, name, reg_no, type } = await request.json();
+  console.log(id, name, reg_no, type);
+  // Validate input
+  if (!id || !name || !reg_no || !type) {
+    return NextResponse.json(
+      { message: "All fields are required." },
+      { status: 400 },
+    );
+  }
 
   // Check if another bus with the same reg_no exists, excluding the current bus
   const { data: existingBuses, error: fetchError } = await supabaseAdmin
     .from("busses")
     .select("*")
     .eq("reg_no", reg_no)
-    .neq("id", id) // Exclude the current bus
+    .neq("id", id) // Exclude the current bus from the check
     .limit(1);
 
   if (fetchError) {
     return NextResponse.json({ message: fetchError.message }, { status: 400 });
   }
 
-  // Check if any bus exists with the same reg_no
+  // If a bus with the same reg_no exists, return a conflict response
   if (existingBuses.length > 0) {
     return NextResponse.json(
       {
@@ -31,41 +39,18 @@ export async function PUT(request: Request) {
     );
   }
 
-  // Check if the name is being changed to an existing name
-  const { data: nameCheck, error: nameCheckError } = await supabaseAdmin
-    .from("busses")
-    .select("*")
-    .eq("name", name)
-    .neq("id", id) // Exclude the current bus
-    .limit(1);
-
-  if (nameCheckError) {
-    return NextResponse.json(
-      { message: nameCheckError.message },
-      { status: 400 },
-    );
-  }
-
-  // Check if any bus exists with the same name
-  if (nameCheck.length > 0) {
-    return NextResponse.json(
-      {
-        message: "Bus with this name already exists.",
-        status: 409,
-      },
-      { status: 409 },
-    );
-  }
-
   // Update the bus
   const { error } = await supabaseAdmin
     .from("busses")
-    .update({ name, reg_no })
+    .update({ name, reg_no, type })
     .eq("id", id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ message: error.message }, { status: 400 });
   }
 
-  return NextResponse.json({ message: "Bus updated successfully" });
+  return NextResponse.json(
+    { message: "Bus updated successfully", status: 200 },
+    { status: 200 },
+  );
 }
