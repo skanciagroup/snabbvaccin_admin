@@ -44,12 +44,16 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
   const onSubmit = async (data: Bus) => {
     setLoading(true);
     try {
+      const trimmedData = {
+        name: data.name.trim(),
+        reg_no: data.reg_no.trim(),
+      };
       const response = await fetch("/api/bus/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(trimmedData),
       });
       const result = await response.json();
 

@@ -1,3 +1,4 @@
+'use client'
 import { ProfileUser } from "@/types/database";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
@@ -16,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+
 type NewUserFormData = Omit<ProfileUser, "user_id">;
 
 const schema = yup.object().shape({
@@ -32,10 +34,13 @@ const schema = yup.object().shape({
   license: yup.boolean().optional(), // Optional
   license_type: yup
     .string()
-    .oneOf(["manual", "automatic"])
-    .when("license", (license, schema) =>
-      license ? schema.required("License type is required") : schema.nullable(),
-    ),
+    .nullable()
+    .oneOf(["manual", "automatic", null])
+    .when("license", {
+      is: true,
+      then: (schema) => schema.required("License type is required"),
+      otherwise: (schema) => schema.notRequired().nullable(),
+    }),
 });
 
 const NewUser = () => {
@@ -54,6 +59,17 @@ const NewUser = () => {
     watch,
   } = useForm<NewUserFormData>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      personal_number: "",
+      phone: "",
+      vaccinator: false, // Default to false
+      license: false, // Default to false
+      license_type: undefined, // Default to empty string
+    },
   });
 
   const isLicenseChecked = watch("license");
@@ -61,12 +77,24 @@ const NewUser = () => {
   const onSubmit = async (data: NewUserFormData) => {
     setLoading(true);
     try {
+      const trimmedData = {
+        first_name: data.first_name.trim(),
+        last_name: data.last_name.trim(),
+        email: data.email.trim(),
+        password: data.password,
+        phone: data.phone,
+        vaccinator: data.vaccinator,
+        license: data.license,
+        license_type: data.license_type,
+        personal_number: data.personal_number?.trim(),
+      };
+
       const response = await fetch("/api/user/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(trimmedData),
       });
       const result = await response.json();
       if (result.status === 409) {
