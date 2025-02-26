@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { ProfileUser } from "@/types/database";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
@@ -17,8 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 type NewUserFormData = Omit<ProfileUser, "user_id">;
+
+// type TrimmedData = NewUserFormData & {
+//   license_type?: "manual" | "automatic" | null;
+// };
 
 const schema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
@@ -77,7 +80,7 @@ const NewUser = () => {
   const onSubmit = async (data: NewUserFormData) => {
     setLoading(true);
     try {
-      const trimmedData = {
+      const trimmedData: NewUserFormData = {
         first_name: data.first_name.trim(),
         last_name: data.last_name.trim(),
         email: data.email.trim(),
@@ -85,9 +88,13 @@ const NewUser = () => {
         phone: data.phone,
         vaccinator: data.vaccinator,
         license: data.license,
-        license_type: data.license_type,
         personal_number: data.personal_number?.trim(),
       };
+
+      // Only include license_type if license is checked
+      if (data.license) {
+        trimmedData.license_type = data.license_type;
+      }
 
       const response = await fetch("/api/user/create", {
         method: "POST",
