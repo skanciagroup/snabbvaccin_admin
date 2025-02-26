@@ -19,9 +19,17 @@ export interface ProfileUser {
   license_type?: "manual" | "automatic";
 }
 
-export interface Organisation  {
+export interface Organisation {
   id?: number;
   name: string;
   created_at?: string;
   updated_at?: string;
-};
+}
+
+export interface Bus {
+  id?: number;
+  name: string;
+  reg_no: string;
+  created_at?: string;
+  updated_at?: string;
+}

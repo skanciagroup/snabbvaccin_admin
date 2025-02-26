@@ -1,38 +1,38 @@
-import React, { useState } from "react";
+"use client";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Bus } from "@/types/database";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import useBusStore from "@/store/busStore";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import Loader from "@/public/loading.gif";
 import Image from "next/image";
-import { Organisation } from "@/types/database";
-import useOrganisationStore from "@/store/organisationStore";
-import toast from "react-hot-toast";
 
-const schema = yup.object().shape({
-  name: yup.string().required("Organization name is required"),
+const schema = yup.object({
+  name: yup.string().required("Name is required"),
+  reg_no: yup.string().required("Registration number is required"),
 });
 
-interface EditOrganisationProps {
-  organisation: Organisation;
+interface EditBusProps {
+  bus: Bus;
   onClose: () => void;
 }
 
-const EditOrganisation: React.FC<EditOrganisationProps> = ({
-  organisation,
-  onClose,
-}) => {
+const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
   const [loading, setLoading] = useState(false);
-  const { fetchOrganisations } = useOrganisationStore();
+  const { fetchBuses } = useBusStore();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Organisation>({
+  } = useForm<Bus>({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: organisation.name,
+      name: bus.name,
+      reg_no: bus.reg_no,
     },
   });
 
@@ -41,33 +41,41 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
     text: "",
   });
 
-  const onSubmit = async (data: Organisation) => {
+  const onSubmit = async (data: Bus) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/organisation/edit", {
+      const response = await fetch("/api/bus/edit", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: organisation.id,
+          id: bus.id,
           name: data.name,
+          reg_no: data.reg_no,
         }),
       });
 
       if (response.ok) {
         setMessage({
           type: "success",
-          text: "Organisation updated successfully",
+          text: "Bus updated successfully",
         });
-        fetchOrganisations();
-        toast.success("Organisation updated successfully");
+        fetchBuses();
+        toast.success("Bus updated successfully");
         onClose();
       } else {
-        setMessage({ type: "error", text: "Failed to update organisation" });
+        const result = await response.json();
+        setMessage({
+          type: "error",
+          text: result.message || "Failed to update bus",
+        });
       }
     } catch (error) {
-      setMessage({ type: "error", text: error as string });
+      setMessage({
+        type: "error",
+        text: error instanceof Error ? error.message : "An error occurred",
+      });
     } finally {
       setLoading(false);
     }
@@ -83,24 +91,42 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
             <Input
               {...field}
               type="text"
-              placeholder="Organization Name"
+              placeholder="Bus Name"
               className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
             />
           )}
         />
         {errors.name && <p className="error-message">{errors.name.message}</p>}
       </div>
+      <div>
+        <Controller
+          name="reg_no"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="text"
+              placeholder="Registration Number"
+              className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
+            />
+          )}
+        />
+        {errors.reg_no && (
+          <p className="error-message">{errors.reg_no.message}</p>
+        )}
+      </div>
       <div className="form-button-div">
+      
       <Button
         type="submit"
         variant="default"
         disabled={loading}
-        className="mt-4 w-full  text-white py-2 px-4 rounded"
+        className="mt-4 w-full text-white py-2 px-4 rounded"
       >
         {loading ? (
           <div className="flex items-center">
             <Image src={Loader} width={40} height={40} alt="loading" />
-            Updating Organisation...
+            Updating Bus...
           </div>
         ) : (
           "Update"
@@ -116,7 +142,6 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
           Cancel
         </Button>
       </div>
-      
       {message.text && (
         <p
           className={
@@ -130,4 +155,4 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
   );
 };
 
-export default EditOrganisation;
+export default EditBus;

@@ -121,7 +121,7 @@ const NewUser = () => {
           )}
         />
         {errors.first_name && (
-          <p className="text-red-500 text-sm p-1 ">
+          <p className="error-message  ">
             {errors.first_name.message}
           </p>
         )}
@@ -141,7 +141,7 @@ const NewUser = () => {
           )}
         />
         {errors.last_name && (
-          <p className="text-red-500 text-sm p-1 ">
+          <p className="error-message  ">
             {errors.last_name.message}
           </p>
         )}
@@ -161,7 +161,7 @@ const NewUser = () => {
           )}
         />
         {errors.email && (
-          <p className="text-red-500 text-sm p-1 ">{errors.email.message}</p>
+          <p className="error-message  ">{errors.email.message}</p>
         )}
       </div>
       <div>
@@ -179,7 +179,7 @@ const NewUser = () => {
           )}
         />
         {errors.password && (
-          <p className="text-red-500 text-sm p-1 ">{errors.password.message}</p>
+          <p className="error-message  ">{errors.password.message}</p>
         )}
       </div>
       <div>
@@ -262,7 +262,7 @@ const NewUser = () => {
             )}
           />
           {errors.license_type && (
-            <p className="text-red-500 text-sm p-1">
+            <p className="error-message ">
               {errors.license_type.message}
             </p>
           )}
@@ -289,7 +289,7 @@ const NewUser = () => {
           className={
             message.type === "success"
               ? "text-primary"
-              : "text-red-500 text-sm p-1 "
+              : "error-message  "
           }
         >
           {message.text}

@@ -22,7 +22,12 @@ body {
 }
 
 @layer components {
-
+  .form-button-div {
+    @apply flex md:flex-row flex-col justify-center items-center space-x-2 w-full
+  }
+  .error-message  {
+    @apply text-red-500 text-sm p-1;
+  }
   .editor-container {
     @apply pl-10;
   }
