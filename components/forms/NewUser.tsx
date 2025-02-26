@@ -121,9 +121,7 @@ const NewUser = () => {
           )}
         />
         {errors.first_name && (
-          <p className="error-message  ">
-            {errors.first_name.message}
-          </p>
+          <p className="error-message  ">{errors.first_name.message}</p>
         )}
       </div>
       <div>
@@ -141,9 +139,7 @@ const NewUser = () => {
           )}
         />
         {errors.last_name && (
-          <p className="error-message  ">
-            {errors.last_name.message}
-          </p>
+          <p className="error-message  ">{errors.last_name.message}</p>
         )}
       </div>
       <div>
@@ -250,7 +246,7 @@ const NewUser = () => {
             render={(
               { field: { onChange, value } }, // Destructure field props
             ) => (
-              <Select value={value} onValueChange={onChange}>
+              <Select value={value || undefined} onValueChange={onChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select License Type" />
                 </SelectTrigger>
@@ -262,9 +258,7 @@ const NewUser = () => {
             )}
           />
           {errors.license_type && (
-            <p className="error-message ">
-              {errors.license_type.message}
-            </p>
+            <p className="error-message ">{errors.license_type.message}</p>
           )}
         </div>
       )}
@@ -287,9 +281,7 @@ const NewUser = () => {
       {message && (
         <p
           className={
-            message.type === "success"
-              ? "text-primary"
-              : "error-message  "
+            message.type === "success" ? "text-primary" : "error-message  "
           }
         >
           {message.text}
