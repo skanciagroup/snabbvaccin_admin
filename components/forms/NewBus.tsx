@@ -10,10 +10,24 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "@/public/loading.gif";
 import Image from "next/image";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const schema = yup.object().shape({
   name: yup.string().required("Bus name is required"),
   reg_no: yup.string().required("Registration number is required"),
+  type: yup
+    .string()
+    .oneOf(
+      ["automatic", "manual"],
+      "Type must be either 'automatic' or 'manual'",
+    )
+    .required("Type is required"),
 });
 
 interface NewBusProps {
@@ -33,6 +47,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
     defaultValues: {
       name: "",
       reg_no: "",
+      type: "automatic",
     },
   });
 
@@ -47,6 +62,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
       const trimmedData = {
         name: data.name.trim(),
         reg_no: data.reg_no.trim(),
+        type: data.type,
       };
       const response = await fetch("/api/bus/create", {
         method: "POST",
@@ -122,21 +138,39 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
           <p className="error-message">{errors.reg_no.message}</p>
         )}
       </div>
+      <div>
+        <Controller
+          name="type"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Select value={value} onValueChange={onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Type" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="automatic">Automatic</SelectItem>
+                <SelectItem value="manual">Manual</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.type && <p className="error-message">{errors.type.message}</p>}
+      </div>
       <div className="form-button-div">
-      <Button
-        type="submit"
-        variant="default"
-        disabled={loading}
-        className="mt-4 w-full text-white py-2 px-4 rounded"
-      >
-        {loading ? (
-          <div className="flex items-center">
-            <Image src={Loader} width={40} height={40} alt="loading" />
-            Creating Bus...
-          </div>
-        ) : (
-          "Submit"
-        )}
+        <Button
+          type="submit"
+          variant="default"
+          disabled={loading}
+          className="mt-4 w-full text-white py-2 px-4 rounded"
+        >
+          {loading ? (
+            <div className="flex items-center">
+              <Image src={Loader} width={40} height={40} alt="loading" />
+              Creating Bus...
+            </div>
+          ) : (
+            "Submit"
+          )}
         </Button>
         <Button
           type="button"
@@ -148,7 +182,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
           Cancel
         </Button>
       </div>
-      
+
       {message.text && (
         <p
           className={

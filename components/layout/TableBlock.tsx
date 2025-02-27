@@ -13,25 +13,23 @@ import { RxCrossCircled } from "react-icons/rx";
 import Modal from "@/components/layout/Modal";
 import { Button } from "@/components/ui/button";
 
-interface TableBlockProps {
+interface TableBlockProps<T> {
   headers: string[];
-  data: Record<string, any>[];
-  onEdit?: (row: Record<string, any>) => void;
-  onDelete?: (row: Record<string, any>) => void;
+  data: T[]; // Use generic type T
+  onEdit: (row: T) => void; // Use generic type T
+  onDelete: (row: T) => void; // Use generic type T
 }
 
-const TableBlock: React.FC<TableBlockProps> = ({
+const TableBlock = <T extends Record<string, any>>({
   headers,
   data,
   onEdit,
   onDelete,
-}) => {
+}: TableBlockProps<T>) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<Record<string, any> | null>(
-    null,
-  );
+  const [selectedRow, setSelectedRow] = useState<T | null>(null);
 
-  const handleDelete = (row: Record<string, any>) => {
+  const handleDelete = (row: T) => {
     setSelectedRow(row);
     setIsDeleteModalOpen(true);
   };
@@ -80,7 +78,11 @@ const TableBlock: React.FC<TableBlockProps> = ({
                     key={colIndex}
                     className="px-6 py-4 text-sm text-gray-600 border-b border-gray-200"
                   >
-                    {row[header.toLowerCase()] ?? "-"}
+                    {typeof row[header.toLowerCase()] === "boolean"
+                      ? row[header.toLowerCase()]
+                        ? "Yes"
+                        : "No"
+                      : row[header.toLowerCase()] ?? "-"}
                   </TableCell>
                 ))}
                 <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
@@ -97,7 +99,7 @@ const TableBlock: React.FC<TableBlockProps> = ({
                         />
                       </button>
                     )}
-                    {onDelete && (
+                    {onDelete && typeof onDelete === "function" && (
                       <button
                         className="p-1 rounded-full hover:bg-red-50 transition-colors duration-200"
                         onClick={() => handleDelete(row)}

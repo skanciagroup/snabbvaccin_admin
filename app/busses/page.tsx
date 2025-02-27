@@ -32,12 +32,13 @@ const Buses = () => {
     const filtered = buses.filter(
       (bus) =>
         bus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase()),
+        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase())||
+        bus.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredBuses(filtered);
   }, [searchTerm, buses]);
 
-  const headers = ["S.No", "Name", "reg_no"];
+  const headers = ["S.No", "Name", "REG_NO", "TYPE"];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDelete = async (row: Record<string, any>) => {

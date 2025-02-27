@@ -19,6 +19,10 @@ export interface ProfileUser {
   license_type?: "manual" | "automatic" | null;
 }
 
+export interface EditUserFormData extends Omit<ProfileUser, 'password'> {
+  password?: string; // Make password optional for editing
+}
+
 export interface Organisation {
   id?: number;
   name: string;
@@ -30,6 +34,7 @@ export interface Bus {
   id?: number;
   name: string;
   reg_no: string;
+  type: "automatic" | "manual";
   created_at?: string;
   updated_at?: string;
 }

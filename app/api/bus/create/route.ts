@@ -7,10 +7,9 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY!;
 const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { name, reg_no } = body;
+  const { name, reg_no, type } = await request.json();
 
-  // Check if the bus already exists
+  // Check if a bus with the same reg_no already exists
   const { data: existingBuses, error: fetchError } = await supabaseAdmin
     .from("busses")
     .select("*")
@@ -21,7 +20,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: fetchError.message }, { status: 400 });
   }
 
-  // Check if any bus exists
+  // If a bus with the same reg_no exists, return a conflict response
   if (existingBuses.length > 0) {
     return NextResponse.json(
       {
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
   // Create a new bus
   const { error } = await supabaseAdmin
     .from("busses")
-    .insert([{ name, reg_no }]);
+    .insert([{ name, reg_no, type }]);
 
   if (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
