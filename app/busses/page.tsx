@@ -32,7 +32,8 @@ const Buses = () => {
     const filtered = buses.filter(
       (bus) =>
         bus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase()),
+        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase())||
+        bus.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredBuses(filtered);
   }, [searchTerm, buses]);
