@@ -28,8 +28,9 @@ const Buses = () => {
   const { loading, setLoading } = useLoadingStore();
   
   useEffect(() => {
+    setLoading(true); 
     fetchBuses();
-    
+    setLoading(false)
   }, [fetchBuses, setLoading]);
   
   useEffect(() => {
