@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useUserStore from "@/store/userStore";
+import useLoadingStore from "@/store/loadingStore";
 
 const schema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
@@ -43,7 +44,7 @@ interface EditUserProps {
 }
 
 const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
-  const [loading, setLoading] = useState(false);
+  const {loading, setLoading} = useLoadingStore();
   const [message, setMessage] = useState({
     type: "",
     status: "",
@@ -281,7 +282,7 @@ const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
         {loading ? (
           <div className="flex items-center">
             <Image src={Loader} width={40} height={40} alt="loading" />
-            Updating user. Please wait
+            Updating user...
           </div>
         ) : (
           "Update"

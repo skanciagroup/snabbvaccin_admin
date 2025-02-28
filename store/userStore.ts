@@ -17,7 +17,6 @@ const useUserStore = create<UserStore>((set) => ({
     try {
       const response = await fetch("/api/user/list");
       const data = await response.json();
-      console.log("Fetched users:", data);
       set({ users: data });
     } catch (error) {
       console.error("Error fetching users:", error);

@@ -9,6 +9,7 @@ import Image from "next/image";
 import { Organisation } from "@/types/database";
 import useOrganisationStore from "@/store/organisationStore";
 import toast from "react-hot-toast";
+import useLoadingStore from "@/store/loadingStore";
 
 const schema = yup.object().shape({
   name: yup.string().required("Organization name is required"),
@@ -23,7 +24,8 @@ const EditOrganisation: React.FC<EditOrganisationProps> = ({
   organisation,
   onClose,
 }) => {
-  const [loading, setLoading] = useState(false);
+
+  const { loading, setLoading } = useLoadingStore();
   const { fetchOrganisations } = useOrganisationStore();
   const {
     control,

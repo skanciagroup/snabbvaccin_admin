@@ -16,6 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useLoadingStore from "@/store/loadingStore";
+import useUserStore from "@/store/userStore";
+
 
 type NewUserFormData = Omit<ProfileUser, "user_id">;
 
@@ -49,13 +52,13 @@ interface NewUserProps {
   onClose: () => void; // Add this line
 }
 const NewUser: React.FC<NewUserProps> = ({onClose}) => {
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useLoadingStore();
   const [message, setMessage] = useState({
     type: "",
     status: "",
     text: "",
   });
-
+  const { fetchUsers } = useUserStore();
   const {
     control,
     handleSubmit,
@@ -118,6 +121,8 @@ const NewUser: React.FC<NewUserProps> = ({onClose}) => {
           status: result.status,
           text: "User created successfully",
         });
+        fetchUsers()
+        onClose();
         reset();
       } else {
         setMessage({
@@ -299,12 +304,12 @@ const NewUser: React.FC<NewUserProps> = ({onClose}) => {
           )}
         </div>
       )}
-      <div>
+      <div className="form-button-div">
       <Button
         type="submit"
         variant="default"
         disabled={loading}
-        className="mt-4 text-white py-2 px-4 rounded"
+        className="mt-4 w-full text-white py-2 px-4 rounded"
       >
         {loading ? (
           <div className="flex items-center">
