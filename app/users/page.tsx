@@ -26,7 +26,7 @@ const Users = () => {
   const { loading, setLoading } = useLoadingStore();
   useEffect(() => {
     fetchUsers(); // Fetch users on component mount
-    setLoading(false);
+    
   }, [fetchUsers, setLoading]);
 
   useEffect(() => {
@@ -39,7 +39,8 @@ const Users = () => {
       : []; // Fallback to an empty array if users is not an array
 
     setFilteredUsers(filtered);
-  }, [searchTerm, users]);
+    setLoading(false);
+  }, [searchTerm, users, setLoading]);
 
   const headers = ["S.No", "First_Name", "Last_Name",  "Email", "Phone", "Vaccinator", "License", "License_Type"]; // Adjust headers based on your User fields
 

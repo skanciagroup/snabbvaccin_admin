@@ -29,7 +29,7 @@ const Buses = () => {
   
   useEffect(() => {
     fetchBuses();
-    setLoading(false);
+    
   }, [fetchBuses, setLoading]);
   
   useEffect(() => {
@@ -40,7 +40,8 @@ const Buses = () => {
         bus.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredBuses(filtered);
-  }, [searchTerm, buses]);
+    setLoading(false);
+  }, [searchTerm, buses, setLoading]);
 
   const headers = ["S.No", "Name", "REG_NO", "TYPE"];
 
