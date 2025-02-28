@@ -29,7 +29,9 @@ const Organisations = () => {
   const { loading, setLoading } = useLoadingStore();
 
   useEffect(() => {
+    setLoading(true)
     fetchOrganisations();
+    setLoading(false); 
   }, [fetchOrganisations, setLoading]);
 
   useEffect(() => {

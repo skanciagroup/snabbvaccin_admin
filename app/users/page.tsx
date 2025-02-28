@@ -15,32 +15,33 @@ import SearchBar from "@/components/SearchBar";
 import EditUser from "@/components/forms/EditUser"; // Ensure you have an EditUser component
 import NewUser from "@/components/forms/NewUser"; // Ensure you have a NewUser component
 import useLoadingStore from "@/store/loadingStore";
+
 const Users = () => {
   const { t } = useTranslation();
-  const { users, fetchUsers } = useUserStore(); // Use the user store
+  const { users, fetchUsers } = useUserStore();
+  const { loading, setLoading } = useLoadingStore();
+  const [filteredUsers, setFilteredUsers] = useState<ProfileUser[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState<ProfileUser | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<ProfileUser[]>([]);
-  const { loading, setLoading } = useLoadingStore();
+
   useEffect(() => {
-    fetchUsers(); // Fetch users on component mount
-    
+    const loadUsers = async () => {
+      setLoading(true); 
+      await fetchUsers(); // Fetch users
+      setLoading(false); 
+    };
+    loadUsers();
   }, [fetchUsers, setLoading]);
 
   useEffect(() => {
-    const filtered = Array.isArray(users)
-      ? users.filter(
-          (user: ProfileUser) =>
-            user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
-      : []; // Fallback to an empty array if users is not an array
-
+    const filtered = users.filter((user: ProfileUser) =>
+      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     setFilteredUsers(filtered);
-    setLoading(false);
-  }, [searchTerm, users, setLoading]);
+  }, [searchTerm, users]);
 
   const headers = ["S.No", "First_Name", "Last_Name",  "Email", "Phone", "Vaccinator", "License", "License_Type"]; // Adjust headers based on your User fields
 
