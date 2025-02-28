@@ -17,6 +17,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import useLoadingStore from "@/store/loadingStore";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -36,7 +37,7 @@ interface EditBusProps {
 }
 
 const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useLoadingStore();
   const { fetchBuses } = useBusStore();
   const {
     control,

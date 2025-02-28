@@ -14,19 +14,20 @@ import toast from "react-hot-toast";
 import SearchBar from "@/components/SearchBar";
 import EditUser from "@/components/forms/EditUser"; // Ensure you have an EditUser component
 import NewUser from "@/components/forms/NewUser"; // Ensure you have a NewUser component
-
+import useLoadingStore from "@/store/loadingStore";
 const Users = () => {
   const { t } = useTranslation();
-  const { users, fetchUsers, loading } = useUserStore(); // Use the user store
+  const { users, fetchUsers } = useUserStore(); // Use the user store
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState<ProfileUser | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<ProfileUser[]>([]);
-
+  const { loading, setLoading } = useLoadingStore();
   useEffect(() => {
     fetchUsers(); // Fetch users on component mount
-  }, [fetchUsers]);
+    setLoading(false);
+  }, [fetchUsers, setLoading]);
 
   useEffect(() => {
     const filtered = Array.isArray(users)
@@ -37,7 +38,6 @@ const Users = () => {
         )
       : []; // Fallback to an empty array if users is not an array
 
-    console.log("Filtered users:", filtered); // Log the filtered users
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
 
@@ -45,12 +45,14 @@ const Users = () => {
 
   const handleDelete = async (row: ProfileUser) => {
     try {
+      setLoading(true);
       const response = await fetch("/api/user/delete", {
         method: "DELETE",
         body: JSON.stringify({ id: row.user_id }),
       });
       if (!response.ok) throw new Error("Failed to delete");
       fetchUsers();
+      setLoading(false);
       toast.success("User deleted successfully");
     } catch (error) {
       console.error("Error deleting user:", error);

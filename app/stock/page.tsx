@@ -1,11 +1,13 @@
 "use client";
 import Loader from "@/components/Loader";
-import { useEffect, useState } from "react";
+import useLoadingStore from "@/store/loadingStore";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const Stock = () => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
+  const { loading, setLoading } = useLoadingStore();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +16,7 @@ const Stock = () => {
       }, 500);
     };
     fetchData();
-  }, []);
+  }, [setLoading]);
 
   return (
     <div className="">

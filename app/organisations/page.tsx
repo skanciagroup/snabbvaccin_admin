@@ -14,10 +14,10 @@ import EditOrganisation from "@/components/forms/EditOrganisation";
 import { Organisation as OrganisationType } from "@/types/database";
 import toast from "react-hot-toast";
 import SearchBar from "@/components/SearchBar"; // Import the SearchBar component
-
+import useLoadingStore from "@/store/loadingStore"; // Import the loading store
 const Organisations = () => {
   const { t } = useTranslation();
-  const { organisations, fetchOrganisations, loading } = useOrganisationStore();
+  const { organisations, fetchOrganisations } = useOrganisationStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedOrganisation, setSelectedOrganisation] =
@@ -25,11 +25,13 @@ const Organisations = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrganisations, setFilteredOrganisations] = useState<
     OrganisationType[]
-  >([]);
+    >([]);
+  const { loading, setLoading } = useLoadingStore();
 
   useEffect(() => {
     fetchOrganisations();
-  }, [fetchOrganisations]);
+    setLoading(false);
+  }, [fetchOrganisations, setLoading]);
 
   useEffect(() => {
     const filtered = organisations.filter((org) =>
@@ -44,12 +46,14 @@ const Organisations = () => {
   const handleDelete = async (row: Record<string, any>) => {
     const organisation = row as OrganisationType;
     try {
+      setLoading(true);
       const response = await fetch("/api/organisation/delete", {
         method: "DELETE",
         body: JSON.stringify({ id: organisation.id }),
       });
       if (!response.ok) throw new Error("Failed to delete");
       fetchOrganisations();
+      setLoading(false);
       toast.success("Organisation deleted successfully");
     } catch (error) {
       console.error("Error deleting organisation:", error);

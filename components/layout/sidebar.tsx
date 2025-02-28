@@ -23,6 +23,7 @@ import { useSidebarStore } from "@/store/sidebarStore";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import useLoadingStore from "@/store/loadingStore";
 
 export function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebarStore();
@@ -31,7 +32,8 @@ export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { t } = useTranslation();
-
+  const { setLoading } = useLoadingStore();
+  
   const menuItems = [
     {
       icon: LayoutDashboard,
@@ -76,6 +78,7 @@ export function Sidebar() {
     if (pathname !== href) {
       router.push(href);
     }
+    setLoading(true);
   };
 
   return (
@@ -98,7 +101,7 @@ export function Sidebar() {
         {menuItems.map((item) => (
           <motion.a
             key={item.href}
-            onClick={() => handleNavigation(item.href)}
+            onClick={() => {handleNavigation(item.href)}}
             className={cn(
               "flex items-center gap-2 p-2 rounded-xl cursor-pointer transition  duration-200 group",
               pathname === item.href

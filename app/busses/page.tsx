@@ -14,20 +14,24 @@ import toast from "react-hot-toast";
 import SearchBar from "@/components/SearchBar";
 import EditBus from "@/components/forms/EditBus";
 import NewBus from "@/components/forms/NewBus";
+import useLoadingStore from "@/store/loadingStore";
+
 
 const Buses = () => {
   const { t } = useTranslation();
-  const { buses, fetchBuses, loading } = useBusStore();
+  const { buses, fetchBuses } = useBusStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedBus, setSelectedBus] = useState<Bus | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBuses, setFilteredBuses] = useState<Bus[]>([]);
-
+  const { loading, setLoading } = useLoadingStore();
+  
   useEffect(() => {
     fetchBuses();
-  }, [fetchBuses]);
-
+    setLoading(false);
+  }, [fetchBuses, setLoading]);
+  
   useEffect(() => {
     const filtered = buses.filter(
       (bus) =>
@@ -44,12 +48,14 @@ const Buses = () => {
   const handleDelete = async (row: Record<string, any>) => {
     const bus = row as Bus;
     try {
+      setLoading(true)
       const response = await fetch("/api/bus/delete", {
         method: "DELETE",
         body: JSON.stringify({ id: bus.id }),
       });
       if (!response.ok) throw new Error("Failed to delete");
       fetchBuses();
+      setLoading(false)
       toast.success("Bus deleted successfully");
     } catch (error) {
       console.error("Error deleting bus:", error);

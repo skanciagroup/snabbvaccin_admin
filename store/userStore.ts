@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { ProfileUser } from "@/types/database"; // Adjust the import based on your actual User type
-
+import { ProfileUser } from "@/types/database"; 
 interface UserStore {
   users: ProfileUser[];
   loading: boolean;
@@ -17,7 +16,6 @@ const useUserStore = create<UserStore>((set) => ({
     try {
       const response = await fetch("/api/user/list");
       const data = await response.json();
-      console.log("Fetched users:", data);
       set({ users: data });
     } catch (error) {
       console.error("Error fetching users:", error);
