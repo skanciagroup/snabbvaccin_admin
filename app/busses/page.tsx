@@ -26,10 +26,12 @@ const Buses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBuses, setFilteredBuses] = useState<Bus[]>([]);
   const { loading, setLoading } = useLoadingStore();
+  
   useEffect(() => {
     fetchBuses();
-  }, [fetchBuses]);
-
+    setLoading(false);
+  }, [fetchBuses, setLoading]);
+  
   useEffect(() => {
     const filtered = buses.filter(
       (bus) =>

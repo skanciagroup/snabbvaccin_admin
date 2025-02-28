@@ -30,7 +30,8 @@ const Organisations = () => {
 
   useEffect(() => {
     fetchOrganisations();
-  }, [fetchOrganisations]);
+    setLoading(false);
+  }, [fetchOrganisations, setLoading]);
 
   useEffect(() => {
     const filtered = organisations.filter((org) =>

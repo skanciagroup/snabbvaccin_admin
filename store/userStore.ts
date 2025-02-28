@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { ProfileUser } from "@/types/database"; // Adjust the import based on your actual User type
-
+import { ProfileUser } from "@/types/database"; 
 interface UserStore {
   users: ProfileUser[];
   loading: boolean;

@@ -1,15 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/store/sidebarStore";
 import SlateEditor from "@/components/editor/SlateEditor";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/Loader";
+import useLoadingStore from "@/store/loadingStore";
 
 const SettingsPage = () => {
   const { isOpen, toggleSidebar } = useSidebarStore();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
+  const { loading, setLoading } = useLoadingStore();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,7 +20,7 @@ const SettingsPage = () => {
       }, 500);
     };
     fetchData();
-  }, []);
+  }, [setLoading]);
 
   return (
     <div className="">

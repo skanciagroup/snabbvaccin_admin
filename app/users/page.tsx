@@ -26,7 +26,8 @@ const Users = () => {
   const { loading, setLoading } = useLoadingStore();
   useEffect(() => {
     fetchUsers(); // Fetch users on component mount
-  }, [fetchUsers]);
+    setLoading(false);
+  }, [fetchUsers, setLoading]);
 
   useEffect(() => {
     const filtered = Array.isArray(users)
