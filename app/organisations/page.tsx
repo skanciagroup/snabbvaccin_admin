@@ -30,7 +30,6 @@ const Organisations = () => {
 
   useEffect(() => {
     fetchOrganisations();
-    setLoading(false);
   }, [fetchOrganisations, setLoading]);
 
   useEffect(() => {
@@ -38,7 +37,8 @@ const Organisations = () => {
       org.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredOrganisations(filtered);
-  }, [searchTerm, organisations]);
+    setLoading(false);
+  }, [searchTerm, organisations, setLoading]);
 
   const headers = ["S.No", "Name"];
 
