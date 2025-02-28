@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import useUserStore from "@/store/userStore";
 import useLoadingStore from "@/store/loadingStore";
+import toast from "react-hot-toast";
 
 const schema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
@@ -116,6 +117,7 @@ const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
           text: "User updated successfully",
         });
         fetchUsers()
+        toast.success("User updated successfully");
         onClose();
       } else {
         setMessage({
@@ -272,12 +274,12 @@ const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
           )}
         </div>
       )}
-
+      <div className="form-button-div">
       <Button
         type="submit"
         variant="default"
         disabled={loading}
-        className="mt-4 text-white py-2 px-4 rounded"
+        className="mt-4 w-full text-white py-2 px-4 rounded"
       >
         {loading ? (
           <div className="flex items-center">
@@ -287,7 +289,17 @@ const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
         ) : (
           "Update"
         )}
-      </Button>
+        </Button>
+        <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  disabled={loading}
+                  className="mt-4 w-full text-primary py-2 px-4 rounded"
+                >
+                  Cancel
+                </Button>
+        </div>
       {message && (
         <p
           className={

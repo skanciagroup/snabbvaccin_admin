@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import useLoadingStore from "@/store/loadingStore";
 import useUserStore from "@/store/userStore";
+import toast from "react-hot-toast";
 
 
 type NewUserFormData = Omit<ProfileUser, "user_id">;
@@ -122,6 +123,7 @@ const NewUser: React.FC<NewUserProps> = ({onClose}) => {
           text: "User created successfully",
         });
         fetchUsers()
+        toast.success("User added successfully");
         onClose();
         reset();
       } else {

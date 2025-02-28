@@ -18,7 +18,8 @@ export async function GET() {
   // Fetch the profiles from the profiles table
   const { data: profiles, error: profileError } = await supabaseAdmin
     .from("profiles")
-    .select("*");
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (profileError) {
     return NextResponse.json({ message: profileError.message }, { status: 400 });
