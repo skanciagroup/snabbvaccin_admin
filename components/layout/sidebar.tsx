@@ -33,7 +33,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { setLoading } = useLoadingStore();
-  
+
   const menuItems = [
     {
       icon: LayoutDashboard,
@@ -76,9 +76,9 @@ export function Sidebar() {
 
   const handleNavigation = (href: string) => {
     if (pathname !== href) {
+      setLoading(true);
       router.push(href);
     }
-    setLoading(true);
   };
 
   return (
@@ -101,7 +101,7 @@ export function Sidebar() {
         {menuItems.map((item) => (
           <motion.a
             key={item.href}
-            onClick={() => {handleNavigation(item.href)}}
+            onClick={() => handleNavigation(item.href)}
             className={cn(
               "flex items-center gap-2 p-2 rounded-xl cursor-pointer transition  duration-200 group",
               pathname === item.href

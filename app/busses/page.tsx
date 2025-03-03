@@ -15,59 +15,60 @@ import SearchBar from "@/components/SearchBar";
 import EditBus from "@/components/forms/EditBus";
 import NewBus from "@/components/forms/NewBus";
 import useLoadingStore from "@/store/loadingStore";
-
+import { busService } from "@/services/busService";
 
 const Buses = () => {
   const { t } = useTranslation();
-  const { buses, fetchBuses } = useBusStore();
+  const { buses, setBuses } = useBusStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedBus, setSelectedBus] = useState<Bus | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBuses, setFilteredBuses] = useState<Bus[]>([]);
   const { loading, setLoading } = useLoadingStore();
-  
+
   useEffect(() => {
-    setLoading(true); 
-    fetchBuses();
-    setLoading(false)
-  }, [fetchBuses, setLoading]);
-  
+    const loadBuses = async () => {
+      setLoading(true);
+      try {
+        const fetchedBuses = await busService.fetchBuses();
+        setBuses(fetchedBuses);
+      } catch (error) {
+        console.error("Error fetching buses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBuses();
+  }, [setBuses, setLoading]);
+
   useEffect(() => {
     const filtered = buses.filter(
       (bus) =>
         bus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase())||
-        bus.type.toLowerCase().includes(searchTerm.toLowerCase())
+        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        bus.type.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredBuses(filtered);
-    setLoading(false);
-  }, [searchTerm, buses, setLoading]);
+  }, [searchTerm, buses]);
 
   const headers = ["S.No", "Name", "REG_NO", "TYPE"];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDelete = async (row: Record<string, any>) => {
-    const bus = row as Bus;
+  const handleDelete = async (row: Bus) => {
     try {
-      setLoading(true)
-      const response = await fetch("/api/bus/delete", {
-        method: "DELETE",
-        body: JSON.stringify({ id: bus.id }),
-      });
-      if (!response.ok) throw new Error("Failed to delete");
-      fetchBuses();
-      setLoading(false)
+      setLoading(true);
+      await busService.deleteBus(row.id!);
+      setBuses(buses.filter((bus) => bus.id !== row.id));
       toast.success("Bus deleted successfully");
     } catch (error) {
       console.error("Error deleting bus:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleEdit = (row: Record<string, any>) => {
-    const bus = row as Bus;
-    setSelectedBus(bus);
+  const handleEdit = (row: Bus) => {
+    setSelectedBus(row);
     setIsEditMode(true);
     setIsDrawerOpen(true);
   };
