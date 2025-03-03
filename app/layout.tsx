@@ -23,8 +23,9 @@ export default function RootLayout({
   return (
     <html lang={language}>
       <body className={`${inter.className} bg-[#f3f0f0]`}>
-        <ToastProvider />
-        {isLoginPage ? children : <MainLayout>{children}</MainLayout>}
+        <ToastProvider>
+          {isLoginPage ? children : <MainLayout>{children}</MainLayout>}
+        </ToastProvider>
       </body>
     </html>
   );

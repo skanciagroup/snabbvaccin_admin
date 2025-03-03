@@ -1,8 +1,8 @@
 "use client";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Bus } from "@/types/database";
+import { BusForm } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBusStore from "@/store/busStore";
@@ -18,6 +18,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import useLoadingStore from "@/store/loadingStore";
+import { busService } from "@/services/busService";
 
 const schema = yup.object().shape({
   name: yup.string().required("Bus name is required"),
@@ -43,7 +44,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Bus>({
+  } = useForm<BusForm>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
@@ -57,7 +58,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
     text: "",
   });
 
-  const onSubmit = async (data: Bus) => {
+  const onSubmit = async (data: BusForm) => {
     setLoading(true);
     try {
       const trimmedData = {
@@ -65,15 +66,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
         reg_no: data.reg_no.trim(),
         type: data.type,
       };
-      const response = await fetch("/api/bus/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trimmedData),
-      });
-      const result = await response.json();
-
+      const result = await busService.createBus(trimmedData);
       if (result.status === 409) {
         setMessage({
           type: "error",
@@ -90,7 +83,7 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
         reset();
       } else {
         setMessage({
-          type: "error",
+          type: "errorUndefined",
           text: "An unexpected error occurred.",
         });
       }
@@ -108,53 +101,35 @@ const NewBus: React.FC<NewBusProps> = ({ onClose }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
       <div>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="text"
-              placeholder="Bus Name"
-              className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
-            />
-          )}
+        <Input
+          {...control.register("name")}
+          type="text"
+          placeholder="Bus Name"
+          className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
         />
         {errors.name && <p className="error-message">{errors.name.message}</p>}
       </div>
       <div>
-        <Controller
-          name="reg_no"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="text"
-              placeholder="Registration Number"
-              className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
-            />
-          )}
+        <Input
+          {...control.register("reg_no")}
+          type="text"
+          placeholder="Registration Number"
+          className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2"
         />
         {errors.reg_no && (
           <p className="error-message">{errors.reg_no.message}</p>
         )}
       </div>
       <div>
-        <Controller
-          name="type"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Select value={value} onValueChange={onChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="automatic">Automatic</SelectItem>
-                <SelectItem value="manual">Manual</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
+        <Select {...control.register("type")}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select Type" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectItem value="automatic">Automatic</SelectItem>
+            <SelectItem value="manual">Manual</SelectItem>
+          </SelectContent>
+        </Select>
         {errors.type && <p className="error-message">{errors.type.message}</p>}
       </div>
       <div className="form-button-div">

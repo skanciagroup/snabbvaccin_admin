@@ -2,7 +2,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Bus } from "@/types/database";
+import { Bus, BusForm } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBusStore from "@/store/busStore";
@@ -18,6 +18,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import useLoadingStore from "@/store/loadingStore";
+import {busService} from "@/services/busService";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -43,7 +44,7 @@ const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Bus>({
+  } = useForm<BusForm>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: bus.name,
@@ -57,44 +58,24 @@ const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
     text: "",
   });
 
-  const onSubmit = async (data: Bus) => {
+  const onSubmit = async (data: BusForm) => {
     setLoading(true);
     try {
       const trimmedData = {
+        id: bus.id,
         name: data.name.trim(),
         reg_no: data.reg_no.trim(),
         type: data.type,
       };
-      const response = await fetch("/api/bus/edit", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: bus.id,
-          ...trimmedData,
-        }),
-      });
-
-      if (response.ok) {
-        setMessage({
-          type: "success",
-          text: "Bus updated successfully",
-        });
-        fetchBuses();
-        toast.success("Bus updated successfully");
-        onClose();
-      } else {
-        const result = await response.json();
-        setMessage({
-          type: "error",
-          text: result.message || "Failed to update bus",
-        });
-      }
+      await busService.editBus(trimmedData.id, trimmedData);
+      fetchBuses();
+      toast.success("Bus updated successfully");
+      onClose();
     } catch (error) {
+      console.error("Error updating bus:", error);
       setMessage({
         type: "error",
-        text: error instanceof Error ? error.message : "An error occurred",
+        text: "An error occurred while updating the bus.",
       });
     } finally {
       setLoading(false);
@@ -136,7 +117,6 @@ const EditBus: React.FC<EditBusProps> = ({ bus, onClose }) => {
         )}
       </div>
       <div>
-        <label htmlFor="type">Type</label>
         <Controller
           name="type"
           control={control}
