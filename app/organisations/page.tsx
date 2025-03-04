@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import SearchBar from "@/components/SearchBar";
 import useLoadingStore from "@/store/loadingStore";
 import { organisationService } from "@/services/organisationService";
-
+ 
 const Organisations = () => {
   const { t } = useTranslation();
   const { organisations, setOrganisations } = useOrganisationStore();
