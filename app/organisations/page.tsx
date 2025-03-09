@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import SearchBar from "@/components/SearchBar";
 import useLoadingStore from "@/store/loadingStore";
 import { organisationService } from "@/services/organisationService";
+import { successToast } from "@/utils/toastUtils";
  
 const Organisations = () => {
   const { t } = useTranslation();
@@ -84,6 +85,34 @@ const Organisations = () => {
     setSelectedOrganisation(null);
   };
 
+  const handleToggleDisabled = async (rowId: number) => {
+    try {
+      const response = await fetch("/api/disable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tableName: "organisations", 
+          row: { id: rowId },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Log the error response
+        throw new Error(
+          `Failed to toggle disabled state: ${errorData.message}`,
+        );
+      }
+      // Optionally, refresh your data or update the state
+      const updatedBuses = await organisationService.fetchOrganisations(); // Fetch updated buses
+      setOrganisations(updatedBuses); // Update the state with the new data
+      successToast("Organisation updated successfully");
+    } catch (error) {
+      console.error("Error toggling disabled state:", error);
+    }
+  };
+
   return (
     <div className="p-6">
       <Drawer isOpen={isDrawerOpen} onClose={handleDrawerClose}>
@@ -146,6 +175,7 @@ const Organisations = () => {
                 data={filteredOrganisations}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onToggleDisabled={handleToggleDisabled}
               />
             ) : (
               <div className="p-4 text-center text-secondary">
