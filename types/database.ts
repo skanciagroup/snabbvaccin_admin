@@ -44,3 +44,21 @@ export interface Bus extends BusForm {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface DocumentForm {
+  name: string;
+  file: File;
+  file_type: string;
+}
+
+export interface Document extends DocumentForm {
+  id: number;
+  filename?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DocumentEditForm {
+  name: string;
+  file_type?: string;
+}

@@ -12,6 +12,11 @@ import { EditIcon } from "lucide-react";
 import { RxCrossCircled } from "react-icons/rx";
 import Modal from "@/components/layout/Modal";
 import { Button } from "@/components/ui/button";
+import {
+  BsFileEarmarkWord,
+  BsFileEarmarkPdf,
+  BsFileEarmarkImage,
+} from "react-icons/bs";
 
 interface TableBlockProps<T> {
   headers: string[];
@@ -78,11 +83,45 @@ const TableBlock = <T extends Record<string, any>>({
                     key={colIndex}
                     className="px-6 py-4 text-sm text-gray-600 border-b border-gray-200"
                   >
-                    {typeof row[header.toLowerCase()] === "boolean"
-                      ? row[header.toLowerCase()]
-                        ? "Yes"
-                        : "No"
-                      : row[header.toLowerCase()] ?? "-"}
+                    {header.toLowerCase() === "file_type" ? (
+                      <div className="flex items-center gap-2">
+                        {row[header.toLowerCase()]?.includes("doc") ? (
+                          <>
+                            <BsFileEarmarkWord
+                              className="text-blue-600"
+                              size={20}
+                            />
+                            <span>Word File</span>
+                          </>
+                        ) : row[header.toLowerCase()]?.includes("pdf") ? (
+                          <>
+                            <BsFileEarmarkPdf
+                              className="text-red-600"
+                              size={20}
+                            />
+                            <span>PDF File</span>
+                          </>
+                        ) : row[header.toLowerCase()]?.includes("image") ? (
+                          <>
+                            <BsFileEarmarkImage
+                              className="text-green-600"
+                              size={20}
+                            />
+                            <span>Image File</span>
+                          </>
+                        ) : (
+                          row[header.toLowerCase()] ?? "-"
+                        )}
+                      </div>
+                    ) : typeof row[header.toLowerCase()] === "boolean" ? (
+                      row[header.toLowerCase()] ? (
+                        "Yes"
+                      ) : (
+                        "No"
+                      )
+                    ) : (
+                      row[header.toLowerCase()] ?? "-"
+                    )}
                   </TableCell>
                 ))}
                 <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
