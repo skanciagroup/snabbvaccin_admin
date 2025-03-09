@@ -51,7 +51,6 @@ const EditUser: React.FC<EditUserProps> = ({ user, onClose }) => {
     status: "",
     text: "",
   });
-  console.log("user", user);
   const { fetchUsers } = useUserStore();
   const {
     control,

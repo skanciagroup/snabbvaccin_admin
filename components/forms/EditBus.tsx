@@ -25,6 +25,7 @@ const schema = yup.object().shape({
   reg_no: yup.string().required("Registration number is required"),
   type: yup
     .string()
+    
     .oneOf(
       ["automatic", "manual"],
       "Type must be either 'automatic' or 'manual'",
