@@ -17,7 +17,8 @@ import SearchBar from "@/components/SearchBar";
 import useLoadingStore from "@/store/loadingStore";
 import { organisationService } from "@/services/organisationService";
 import { successToast } from "@/utils/toastUtils";
- 
+import useDisabledStore from "@/store/disabledStore";
+
 const Organisations = () => {
   const { t } = useTranslation();
   const { organisations, setOrganisations } = useOrganisationStore();
@@ -30,6 +31,7 @@ const Organisations = () => {
     OrganisationType[]
   >([]);
   const { loading, setLoading } = useLoadingStore();
+  const { setDisabledSwitch } = useDisabledStore();
 
   useEffect(() => {
     const loadOrganisations = async () => {
@@ -87,6 +89,7 @@ const Organisations = () => {
 
   const handleToggleDisabled = async (rowId: number) => {
     try {
+      setDisabledSwitch(true)
       const response = await fetch("/api/disable", {
         method: "POST",
         headers: {
@@ -107,6 +110,7 @@ const Organisations = () => {
       // Optionally, refresh your data or update the state
       const updatedBuses = await organisationService.fetchOrganisations(); // Fetch updated buses
       setOrganisations(updatedBuses); // Update the state with the new data
+      setDisabledSwitch(false)  
       successToast("Organisation updated successfully");
     } catch (error) {
       console.error("Error toggling disabled state:", error);

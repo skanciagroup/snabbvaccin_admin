@@ -17,6 +17,7 @@ import NewBus from "@/components/forms/NewBus";
 import useLoadingStore from "@/store/loadingStore";
 import { busService } from "@/services/busService";
 import { successToast } from "@/utils/toastUtils";
+import useDisabledStore from "@/store/disabledStore";
 
 const Buses = () => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const Buses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBuses, setFilteredBuses] = useState<Bus[]>([]);
   const { loading, setLoading } = useLoadingStore();
-
+  const { setDisabledSwitch } = useDisabledStore();
   useEffect(() => {
     const loadBuses = async () => {
       setLoading(true);
@@ -79,6 +80,7 @@ const Buses = () => {
 
   const handleToggleDisabled = async (rowId: number) => {
     try {
+      setDisabledSwitch(true)
       const response = await fetch("/api/disable", {
         method: "POST",
         headers: {
@@ -99,6 +101,7 @@ const Buses = () => {
       // Optionally, refresh your data or update the state
       const updatedBuses = await busService.fetchBuses(); // Fetch updated buses
       setBuses(updatedBuses); // Update the state with the new data
+      setDisabledSwitch(false)
       successToast("Bus updated successfully");
     } catch (error) {
       console.error("Error toggling disabled state:", error);

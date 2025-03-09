@@ -15,6 +15,8 @@ import SearchBar from "@/components/SearchBar";
 import EditUser from "@/components/forms/EditUser"; // Ensure you have an EditUser component
 import NewUser from "@/components/forms/NewUser"; // Ensure you have a NewUser component
 import useLoadingStore from "@/store/loadingStore";
+import useDisabledStore from "@/store/disabledStore";
+
 
 const Users = () => {
   const { t } = useTranslation();
@@ -25,6 +27,7 @@ const Users = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState<ProfileUser | null>(null);
+  const { setDisabledSwitch } = useDisabledStore();
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -71,6 +74,36 @@ const Users = () => {
     setIsDrawerOpen(false);
     setIsEditMode(false);
     setSelectedUser(null);
+  };
+
+  const handleToggleDisabled = async (rowId: number) => {
+    try {
+      setDisabledSwitch(true)
+      const response = await fetch("/api/disable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tableName: "profiles", 
+          row: { id: rowId },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Log the error response
+        throw new Error(
+          `Failed to toggle disabled state: ${errorData.message}`,
+        );
+      }
+      // Optionally, refresh your data or update the state
+      const updatedBuses = await busService.fetchBuses(); // Fetch updated buses
+      setBuses(updatedBuses); // Update the state with the new data
+      setDisabledSwitch(false)
+      successToast("Bus updated successfully");
+    } catch (error) {
+      console.error("Error toggling disabled state:", error);
+    }
   };
 
   return (
@@ -132,6 +165,7 @@ const Users = () => {
                 data={filteredUsers}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onToggleDisabled={handleToggleDisabled}
               />
             ) : (
               <div className="p-4 text-center text-secondary">
