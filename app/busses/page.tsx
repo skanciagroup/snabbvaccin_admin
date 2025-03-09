@@ -16,6 +16,7 @@ import EditBus from "@/components/forms/EditBus";
 import NewBus from "@/components/forms/NewBus";
 import useLoadingStore from "@/store/loadingStore";
 import { busService } from "@/services/busService";
+import { successToast } from "@/utils/toastUtils";
 
 const Buses = () => {
   const { t } = useTranslation();
@@ -46,8 +47,8 @@ const Buses = () => {
     const filtered = buses.filter(
       (bus) =>
         bus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase())
-        //bus.type.toLowerCase().includes(searchTerm.toLowerCase()),
+        bus.reg_no.toLowerCase().includes(searchTerm.toLowerCase()),
+      //bus.type.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredBuses(filtered);
   }, [searchTerm, buses]);
@@ -56,14 +57,11 @@ const Buses = () => {
 
   const handleDelete = async (row: Bus) => {
     try {
-      setLoading(true);
       await busService.deleteBus(row.id!);
       setBuses(buses.filter((bus) => bus.id !== row.id));
       toast.success("Bus deleted successfully");
     } catch (error) {
       console.error("Error deleting bus:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -77,6 +75,34 @@ const Buses = () => {
     setIsDrawerOpen(false);
     setIsEditMode(false);
     setSelectedBus(null);
+  };
+
+  const handleToggleDisabled = async (rowId: number) => {
+    try {
+      const response = await fetch("/api/disable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tableName: "busses", 
+          row: { id: rowId },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Log the error response
+        throw new Error(
+          `Failed to toggle disabled state: ${errorData.message}`,
+        );
+      }
+      // Optionally, refresh your data or update the state
+      const updatedBuses = await busService.fetchBuses(); // Fetch updated buses
+      setBuses(updatedBuses); // Update the state with the new data
+      successToast("Bus updated successfully");
+    } catch (error) {
+      console.error("Error toggling disabled state:", error);
+    }
   };
 
   return (
@@ -138,6 +164,7 @@ const Buses = () => {
                 data={filteredBuses}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onToggleDisabled={handleToggleDisabled}
               />
             ) : (
               <div className="p-4 text-center text-secondary">

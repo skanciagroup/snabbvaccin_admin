@@ -107,7 +107,6 @@ const EditDocument: React.FC<EditDocumentProps> = ({ document, onClose }) => {
       }
     } catch (error) {
       console.error("Error updating document:", error);
-      toast.error("Failed to update document.");
     } finally {
       setLoading(false);
     }

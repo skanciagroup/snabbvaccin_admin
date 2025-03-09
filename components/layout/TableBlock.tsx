@@ -17,12 +17,14 @@ import {
   BsFileEarmarkPdf,
   BsFileEarmarkImage,
 } from "react-icons/bs";
+import { Switch } from "@radix-ui/react-switch";
 
 interface TableBlockProps<T> {
   headers: string[];
   data: T[]; // Use generic type T
-  onEdit: (row: T) => void; // Use generic type T
-  onDelete: (row: T) => void; // Use generic type T
+  onEdit?: (row: T) => void; // Use generic type T
+  onDelete?: (row: T) => void; // Use generic type T
+  onToggleDisabled?: (rowId: number) => void; // Keep the toggle function prop
 }
 
 const TableBlock = <T extends Record<string, any>>({
@@ -30,6 +32,7 @@ const TableBlock = <T extends Record<string, any>>({
   data,
   onEdit,
   onDelete,
+  onToggleDisabled,
 }: TableBlockProps<T>) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
@@ -62,6 +65,9 @@ const TableBlock = <T extends Record<string, any>>({
                 </TableHead>
               ))}
               <TableHead className="px-6 py-4 text-sm font-semibold text-gray-600 border-b border-gray-200">
+                Disabled
+              </TableHead>
+              <TableHead className="px-6 py-4 text-sm font-semibold text-gray-600 border-b border-gray-200">
                 Actions
               </TableHead>
             </TableRow>
@@ -84,30 +90,30 @@ const TableBlock = <T extends Record<string, any>>({
                     className="px-6 py-4 text-sm text-gray-600 border-b border-gray-200"
                   >
                     {header.toLowerCase() === "file_type" ? (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-sm">
                         {row[header.toLowerCase()]?.includes("doc") ? (
                           <>
                             <BsFileEarmarkWord
                               className="text-blue-600"
-                              size={20}
+                              size={19}
                             />
-                            <span>Word File</span>
+                            <span>Word</span>
                           </>
                         ) : row[header.toLowerCase()]?.includes("pdf") ? (
                           <>
                             <BsFileEarmarkPdf
                               className="text-red-600"
-                              size={20}
+                              size={19}
                             />
-                            <span>PDF File</span>
+                            <span>PDF</span>
                           </>
                         ) : row[header.toLowerCase()]?.includes("image") ? (
                           <>
                             <BsFileEarmarkImage
-                              className="text-green-600"
-                              size={20}
+                              className="text-primary"
+                              size={19}
                             />
-                            <span>Image File</span>
+                            <span>Image</span>
                           </>
                         ) : (
                           row[header.toLowerCase()] ?? "-"
@@ -125,6 +131,24 @@ const TableBlock = <T extends Record<string, any>>({
                   </TableCell>
                 ))}
                 <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
+                    <Switch
+                      checked={!row.disabled} // Assuming 'disabled' is a boolean
+                      onCheckedChange={() =>
+                        onToggleDisabled && onToggleDisabled(row.id)
+                      } // Call the toggle function
+                      className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 ${
+                        row.disabled ? "bg-gray-200" : "bg-primary"
+                      }`}
+                    >
+                      <span className="sr-only">Toggle disabled state</span>
+                      <span
+                        className={`${
+                          row.disabled ? "translate-x-1" : "translate-x-5"
+                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                      />
+                    </Switch>
+                </TableCell>
+                <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
                   <div className="flex items-center gap-3">
                     {onEdit && (
                       <button
@@ -138,7 +162,7 @@ const TableBlock = <T extends Record<string, any>>({
                         />
                       </button>
                     )}
-                    {onDelete && typeof onDelete === "function" && (
+                    {onDelete && (
                       <button
                         className="p-1 rounded-full hover:bg-red-50 transition-colors duration-200"
                         onClick={() => handleDelete(row)}

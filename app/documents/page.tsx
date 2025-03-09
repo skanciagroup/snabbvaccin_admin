@@ -16,6 +16,7 @@ import { documentService } from "@/services/documentService";
 import NewDocument from "@/components/forms/NewDocument";
 import EditDocument from "@/components/forms/EditDocument";
 import useDocumentStore from "@/store/documentStore";
+import { successToast } from "@/utils/toastUtils";
 
 const Buses = () => {
   const { t } = useTranslation();
@@ -77,6 +78,34 @@ const Buses = () => {
     setSelectedDocument(null);
   };
 
+  const handleToggleDisabled = async (rowId: number) => {
+    try {
+      const response = await fetch("/api/disable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tableName: "documents", 
+          row: { id: rowId },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Log the error response
+        throw new Error(
+          `Failed to toggle disabled state: ${errorData.message}`,
+        );
+      }
+      // Optionally, refresh your data or update the state
+      const updatedBuses = await documentService.fetchDocuments(); // Fetch updated buses
+      setDocuments(updatedBuses); // Update the state with the new data
+      successToast("Document updated successfully");
+    } catch (error) {
+      console.error("Error toggling disabled state:", error);
+    }
+  };
+
   return (
     <div className="p-6">
       <Drawer isOpen={isDrawerOpen} onClose={handleDrawerClose}>
@@ -135,7 +164,8 @@ const Buses = () => {
                 headers={headers}
                 data={filteredDocuments}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                  onDelete={handleDelete}
+                  onToggleDisabled={handleToggleDisabled}
               />
             ) : (
               <div className="p-4 text-center text-secondary">
