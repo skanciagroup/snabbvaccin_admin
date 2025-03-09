@@ -18,6 +18,7 @@ import {
   BsFileEarmarkImage,
 } from "react-icons/bs";
 import { Switch } from "@radix-ui/react-switch";
+import useDisabledStore from "@/store/disabledStore";
 
 interface TableBlockProps<T> {
   headers: string[];
@@ -36,6 +37,10 @@ const TableBlock = <T extends Record<string, any>>({
 }: TableBlockProps<T>) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
+  const { disabledSwitch } = useDisabledStore();
+  const [animatingSwitchId, setAnimatingSwitchId] = useState<number | null>(
+    null,
+  ); // Track the currently animating switch
 
   const handleDelete = (row: T) => {
     setSelectedRow(row);
@@ -48,6 +53,13 @@ const TableBlock = <T extends Record<string, any>>({
     }
     setIsDeleteModalOpen(false);
     setSelectedRow(null);
+  };
+
+  const handleToggle = (rowId: number) => {
+    setAnimatingSwitchId(rowId); // Set the animating switch ID
+    if (onToggleDisabled) {
+      onToggleDisabled(rowId); // Call the passed toggle function
+    }
   };
 
   return (
@@ -131,22 +143,24 @@ const TableBlock = <T extends Record<string, any>>({
                   </TableCell>
                 ))}
                 <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
-                    <Switch
-                      checked={!row.disabled} // Assuming 'disabled' is a boolean
-                      onCheckedChange={() =>
-                        onToggleDisabled && onToggleDisabled(row.id)
-                      } // Call the toggle function
-                      className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 ${
-                        row.disabled ? "bg-gray-200" : "bg-primary"
+                  <Switch
+                    checked={!row.disabled}
+                    onCheckedChange={() => handleToggle(row.id)}
+                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 ${
+                      row.disabled ? "bg-gray-200" : "bg-primary"
+                    }`}
+                  >
+                    <span className="sr-only">Toggle disabled state</span>
+                    <span
+                      className={`${
+                        row.disabled ? "translate-x-1" : "translate-x-5"
+                      } inline-block h-4 w-4 transform rounded-full transition ${
+                        animatingSwitchId === row.id && disabledSwitch
+                          ? "animate-pulse bg-primaryDark transition-shadow"
+                          : "bg-white"
                       }`}
-                    >
-                      <span className="sr-only">Toggle disabled state</span>
-                      <span
-                        className={`${
-                          row.disabled ? "translate-x-1" : "translate-x-5"
-                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                      />
-                    </Switch>
+                    />
+                  </Switch>
                 </TableCell>
                 <TableCell className="px-6 py-4 text-sm border-b border-gray-200">
                   <div className="flex items-center gap-3">
