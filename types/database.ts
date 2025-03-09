@@ -62,3 +62,15 @@ export interface DocumentEditForm {
   name: string;
   file_type?: string;
 }
+
+export interface LocationForm {
+  name: string;
+  address: string;
+  mvid: number;
+}
+
+export interface Location extends LocationForm {
+  id?: number | undefined;
+  created_at?: string;
+  updated_at?: string;
+}
